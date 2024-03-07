@@ -89,29 +89,6 @@ vim.o.foldenable = false        -- Disable folding by default
 --------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
----- ┌──────────┐
----- │ vim-plug │
----- └──────────┘
----- 	 • https://github.com/junegunn/vim-plug?tab=readme-ov-file
-vim.cmd[[
- source $HOME/.config/nvim-fish-lsp/vim-plug.vim
-]]
--- require('telescope').setup()
--- require('telescope').load_extension('coc')
--- require('user.treesitter')
-
-
---------------------------------------------------------------------------------
-
---------------------------------------------------------------------------------
----- ┌──────────┐
----- │ coc.nvim │
----- └──────────┘
-----      • https://github.com/neoclide/coc.nvim
-
-require('user.default-coc')
-
---------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
 ---- ┌─────────┐
@@ -169,11 +146,14 @@ keymap("n", "M", "g%", opts)
 keymap("n", "<leader>i", "<cmd>Inspect<cr>", opts)
 keymap("n", "<leader>ii", "<cmd>InspectTree<cr>", opts)
 
--- restart coc.nvim
-keymap("n", "<leader><cr>", "<cmd>CocRestart<cr>", opts)
-
 --------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
+
+vim.cmd[[
+  autocmd VimEnter,BufNewFile *.fish setlocal ft=fish
+]]
 
 -- ... anything else ...
+keymap("n", "gs", "<cmd>lua vim.lsp.buf.hover()<cr>", opts)
+keymap("n", "gr", "<cmd>lua vim.lsp.buf.refrences()<cr>", opts)
