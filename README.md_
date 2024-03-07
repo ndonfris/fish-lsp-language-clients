@@ -1,0 +1,206 @@
+# Minimal fish-lsp nvim Configuration
+
+This is a minimal configuration for using fish-lsp with nvim (using coc.nvim for
+lsp client). Relies exclusively on using the [fish-lsp](https://github.com/ndonfris/fish-lsp) to provide language features to neovim for
+fish shell. PR's are welcome to showcase other basic integrations  of the lsp _(nvim's native-lsp, vscode, etc.)_. 
+
+__THIS REPO DOES NOT REQUIRE EDITING YOUR CURRENT NVIM CONFIGURATION.__
+Instead, it uses `$NVIM_APPNAME` to determine the nvim version to use. 
+> see `:h NVIM_APPNAME`. [MORE INFO __HERE__](https://neovim.io/doc/user/starting.html#%24NVIM_APPNAME)
+
+Needs `$fish_lsp_exe` built and exported as global variable to be used in [coc-settings.json](./coc-settings.json)
+The global env variable, _$fish_lsp_exe_, is built when the [fish-lsp](https://github.com/ndonfris/fish-lsp) package
+has successfully compiled. The executable will be located at `fish-lsp/out/cli.js` (this file will
+need executable privileges).
+> NOTE: For the server to properly function, the fish-lsp requires building tree-sitter-fish __.wasm__ file.
+
+## Usage
+1. create an alias to the NVIM_APPNAME you want to use. For example, if you want to use nvimfish, you can create an alias like this:
+```fish
+./post-install.sh # should install the dependencies for this neovim config
+alias nvimfish='NVIM_APPNAME=nvim-fish-lsp nvim'
+```
+2. Open a fish file and see if the lsp server is working. If it's not, you may need to install the fish-lsp server. See [fish-lsp](https://github.com/ndonfris/fish-lsp) for more information.
+   Depending on the size your fish shell configuration, it may take a few seconds to
+   index all the files. _(On my machine it takes almost 3 seconds to index ~1000 fish files)_
+```fish
+nvimfish ~/.config/fish/config.fish
+```
+3. _(Optional)_ If you want to use this configuration regularly, you can source
+   the alias __(from the first command)__ in your shell configuration.
+
+
+## Installation
+
+#### Method 1 _(using the post-install.sh script)_
+1. clone the repo 
+```fish
+git clone git@github.com:ndonfris/nvim-fish-lsp-tester.git $HOME/.config/nvim-fish-lsp/
+```
+2. make sure you have an up to date version of nvim __(v.0.10.0)__
+3. run the `./post-install.sh` script
+4. open a __fish__ file
+
+#### Method 2 _(not using ./post-install.sh to build nvim config)_
+1. clone the repo 
+```fish
+git clone git@github.com:ndonfris/nvim-fish-lsp-tester.git $HOME/.config/nvim-fish-lsp/
+```
+2. make sure you have an up to date version of nvim __(v.0.10.0)__
+3. set an alias using `NVIM_APPNAME`
+4. install [vim-plug](https://github.com/junegunn/vim-plug) if you don't have it _([plug.vim](https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim) should be included when the repo is cloned)_
+5. open aliased nvim and run `:PlugInstall`
+6. open a __fish__ file
+
+
+## Neovim Plugins Used
+- [vim-plug](https://github.com/junegunn/vim-plug)
+- [coc.nvim](https://github.com/neoclide/coc.nvim)
+- [treesitter](https://github.com/nvim-treesitter/nvim-treesitter)
+- [vim-fish](https://github.com/dag/vim-fish)
+- [plenary.nvim](https://github.com/nvim-lua/plenary.nvim)
+- [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
+- [telescope-coc](https://github.com/fannheyward/telescope-coc.nvim)
+
+## Installing a newer nvim version. __(nightly >= 0.10.0 required)__
+Here's a link to [bob (nvim package manager)](https://github.com/MordechaiHadad/bob).
+Useful package manager for installing and managing nvim versions.
+
+__tested on version of nvim below__:
+```
+~> bob install nightly
+-> bob use nightly-b8rF4e6S
+
+-> # add bob binary to the env $PATH
+-> set -agx PATH $HOME/.local/share/bob/nvim-bin
+
+
+~> nvim --version
+NVIM v0.10.0-dev-594ff34
+Build type: RelWithDebInfo
+LuaJIT 2.1.1696795921
+Run "nvim -V1 -v" for more info
+```
+## config commands cheat sheet 
+To see the complete configuartion of all keybindings and settings provided by
+this neovim release, please browse the source code. Some of the most popular
+commands are mentioned below.
+| mode | command | behavior | 
+|------|---------|----------|
+| normal | `gd` | go to definition |
+| normal | `gr` | list references |
+| normal | `K` | show documentation |
+| normal | `gs` | show documentation |
+| normal | `gh` | show hover |
+| normal | `rn` | rename in scope |
+| normal | `gca` | list code actions |
+| normal | `<c-w><c-w>` | focus floating window |
+| normal | `:Telescope coc workspace_symbols` | query all symbols in workspace |
+| normal | `:Telescope coc document_symbols` | query all symbols in document |
+| normal | `:Telescope coc *` | other telescope functionality |
+| normal | `f` | format entire file |
+| visual select | `f` | format selected |
+| insert | `<C-space>` | list completions |
+| insert | `<tab>` | complete item/expand abbr |
+
+#### highlighting how to use the commands above:
+- Hover documentation is aimed to be as detailed as possible. For example, the
+  documentation for a token will vary based on its type. Given the command:
+    ```fish
+    set -gx FISH_CONFIG $HOME/.config/fish
+    ```
+    - hovering the `set` command will show the man page
+    - hovering the `-gx` flag will show __BOTH__ flags description's
+    - hovering the `FISH_CONFIG` variable definition will output the variable's value
+    - hovering the `$HOME` variable will output its corresponding value (it will try to find the most recent value set to `$HOME` prior to the scope of the hover request)
+
+
+- Goto definition will take you to the nearest definition of the token under the cursor. In fish shell,
+- Variables are allowed to be set multiple times. The fish-lsp is designed to
+properly handle which reference of a variable is the definition. It also handles
+local vs global naming conflicts that would be ambiguous when possible (local vs
+global scope). Lastly, commands which possibly set a variable but are given a
+flag to test it's existence will not be included in the definition list (`set -q
+PATH`).
+- Pipes and redirects are also included in the __completion list__ and __hover documentation__ 
+- Renaming a variable will properllly rename all references to the variable in the
+  current scope. Global references can also be renamed, but only in the user's
+  workspace and should be done so with caution.
+<table>
+<tr>
+<td>files: </td><td>foo</td><td>bar</td><td>baz</td>
+</tr>
+<tr>
+<td> code </td>
+<td>
+
+```fish
+set -gx i 1
+```
+
+</td>
+<td>
+
+```fish
+function bar
+  echo $i
+end
+```
+
+</td>
+<td>
+
+```fish
+function baz
+  for i in (seq 1 10)
+      echo $i
+  end
+end
+```
+
+</td>
+</tr>
+<tr>
+<td> behavior </td>
+<td> Here we try to rename global variable `i` </td>
+<td> `i` will be renamed because it is referencing the global definition </td>
+<td> Neither `i` will be renamed because it is a local variable.
+Likewise, if we renamed the `i` in this file instead of the globally scoped 
+ones, `foo` and `bar` would not be affected.
+</td>
+</tr>
+</table>
+<br>
+
+
+
+- Commands, subcommands, flags and arguments are interactively constructed on each completion request.
+  Locally scoped completions are also included in the completion list (which
+  is not provided by the fish interactive command line). Documentation for the
+  local completion definitions are built with the most recent definition.
+
+- Abbreviations are expanded when selected from the completion list.
+
+- Multiple versions of the variable definition commands are handled properly.
+The commands `set`, `read`, `function`, and `for` properly tokenize which variable is being
+defined/referenced.
+
+```fish
+function foo --argument-names bar
+  echo $bar
+  echo $argv
+end
+```
+> Try out the `hover documentation` on a snippet similar to the one above for
+> both variables referenced in the `echo` commands.
+
+
+- Functions defined in the config.fish file are properly indexed, just like they
+  would be in a normal fish shell function. Private functions are also indexed
+  to their respective scope. A definition inside a script outside of the user's
+  configuration directory will likewise only be indexed to that local script.
+
+
+
+## See Also:
+- [fish-lsp](https://github.com/ndonfris/fish-lsp)

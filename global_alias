@@ -1,0 +1,1 @@
+echo "alias nvim-fish-lsp='NVIM_APPNAME=nvim-fish-lsp nvim'" >> ~/.config/fish/config.fish

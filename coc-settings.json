@@ -1,0 +1,20 @@
+{
+  "languageserver": {
+    "fishlsp": {
+      "command": "fish-lsp",
+      "filetypes": ["fish"],
+      "args": ["start"],
+      "revealOutputChannelOn": "info",
+      "initializationOptions": {
+        "workspaces": {
+          "paths": {
+            "defaults": [
+              "$HOME/.config/fish",
+              "/usr/share/fish"
+            ]
+          }
+        }
+      }
+    }
+  },
+}
