@@ -8,18 +8,18 @@ endif
 call plug#begin('~/.config/nvim-fish-lsp/autoload/plugged')
   " Use release branch (recommended)
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
-  Plug 'nvim-treesitter/nvim-treesitter'
+  " Plug 'nvim-treesitter/nvim-treesitter'
 
   " telescope
-  Plug 'nvim-lua/plenary.nvim'
-  Plug 'nvim-telescope/telescope.nvim'
-  Plug 'fannheyward/telescope-coc.nvim'
+  " Plug 'nvim-lua/plenary.nvim'
+  " Plug 'nvim-telescope/telescope.nvim'
+  " Plug 'fannheyward/telescope-coc.nvim'
 
   " fish helper 
-  Plug 'dag/vim-fish'
+  " Plug 'dag/vim-fish'
 
   " surround
-  Plug 'kylechui/nvim-surround'
+  " Plug 'kylechui/nvim-surround'
 
   " colorscheme
   " Plug 'mofiqul/dracula.nvim'
