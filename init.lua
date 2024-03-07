@@ -95,11 +95,10 @@ vim.o.foldenable = false        -- Disable folding by default
 ---- 	 • https://github.com/junegunn/vim-plug?tab=readme-ov-file
 vim.cmd[[
  source $HOME/.config/nvim-fish-lsp/vim-plug.vim
- source $HOME/.config/nvim-fish-lsp/theme.vim
 ]]
-require('telescope').setup()
-require('telescope').load_extension('coc')
-require('user.treesitter')
+-- require('telescope').setup()
+-- require('telescope').load_extension('coc')
+-- require('user.treesitter')
 
 
 --------------------------------------------------------------------------------
@@ -111,7 +110,6 @@ require('user.treesitter')
 ----      • https://github.com/neoclide/coc.nvim
 
 require('user.default-coc')
-vim.cmd('source $HOME/.config/nvim-fish-lsp/coc.vim')
 
 --------------------------------------------------------------------------------
 
@@ -162,9 +160,6 @@ keymap('n', '<C-c><C-c>', "<cmd>noh<cr>", opts)
 -- Stay in indent mode
 keymap("v", "<", "<gv", opts) -- visual mode
 keymap("v", ">", ">gv", opts) -- visual mode
-
--- telescope
-keymap("n", "<C-space>", "<cmd>Telescope find_files<cr>", opts)
 
 -- match
 keymap("n", "m", "%", opts)
