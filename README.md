@@ -8,7 +8,7 @@ git branch -a | string match -re "remotes/*" | string match -ve "remotes/origin/
 
 2. choose a client
 ```fish
-git checkout -b <client>
+git checkout <client>
 ```
 
 3. setup your configuration
