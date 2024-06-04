@@ -1,0 +1,7 @@
+[[language]]
+name = "fish"
+language-servers = [ "fish-lsp" ]
+
+[language-server.fish-lsp]
+command = "fish-lsp"
+args= ["start"]
