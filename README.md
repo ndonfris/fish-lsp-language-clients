@@ -1,9 +1,13 @@
+<!-- markdownlint-disable-file -->
 # fish-lsp-language-clients
-A collection of neovim clients for the [fish language server](https://github.com/ndonfris/fish-lsp.git).
-While all examples are shown with neovim, the clients should work with any LSP
-compatible editor. __REQUIRES neovim v.0.10.0__ 
 
-Currently there is 4 different client implementations:
+A collection of lsp-clients for the [fish language server](https://github.com/ndonfris/fish-lsp.git).
+
+Currently, there are 5 different client implementations:
+
+- [x] [helix](https://github.com/ndonfris/fish-lsp-language-clients/tree/helix)
+   - setup for [helix](https://helix-editor.com/)
+   - uses [languages.toml](https://github.com/ndonfris/fish-lsp-language-clients/tree/helix/langauges.toml) example
 - [x] [kickstart](https://github.com/ndonfris/fish-lsp-language-clients/tree/kickstart)
     - uses [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim) as starting point
     - uses [lazy](https://github.com/folke/lazy.nvim) for lazy loading plugins
@@ -20,6 +24,13 @@ Currently there is 4 different client implementations:
 
 ## Usage
 
+> [!NOTE]
+> Don't forget to make sure your [fish-lsp](https://github.com/ndonfris/fish-lsp/) command is working
+>
+> ```fish
+> fish-lsp start
+> ```
+
 1. clone the repository into the `~/.config` directory
 ```fish
 git clone https://github.com/ndonfris/fish-lsp-language-clients.git \
@@ -30,7 +41,8 @@ git clone https://github.com/ndonfris/fish-lsp-language-clients.git \
 # git branch -a
 git checkout <CLIENT>
 ```
-> client can be `kickstart`, `native-nvim`, `coc-example`, or `coc-minimal`
+> client can be `kickstart`, `native-nvim`, `coc-example`, `coc-minimal` or
+> `helix`
 
 3. Setup the client if necessary _(varies across each setup)_
 
@@ -40,8 +52,9 @@ git checkout <CLIENT>
 | native-nvim | `N/A` |
 | coc-example | `:PlugInstall` |
 | coc-minimal | `:PlugInstall` |
+| helix | `N/A` | 
 
-4. open the client [take advantage of the `NVIM_APPNAME` environment variable]
+4. __(NEOVIM ONLY)__ Open the client (take advantage of the `NVIM_APPNAME` environment variable)
 ```fish
 alias fish-lsp-client='NVIM_APPNAME=nvim-fish-lsp-language-client nvim'
 alias flc-conf="fish-lsp-client ~/.config/fish/config.fish"
