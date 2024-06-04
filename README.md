@@ -1,8 +1,11 @@
 # fish-lsp-language-clients
 
+> More information about the helix client installation, can be found [here](https://github.com/ndonfris/fish-lsp/discussions/18#discussioncomment-9585430)
+
 A collection of lsp-clients for the [fish language server](https://github.com/ndonfris/fish-lsp.git).
 
 Currently there is 5 different client implementations:
+
 - [x] [kickstart](https://github.com/ndonfris/fish-lsp-language-clients/tree/kickstart)
     - uses [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim) as starting point
     - uses [lazy](https://github.com/folke/lazy.nvim) for lazy loading plugins
@@ -22,13 +25,20 @@ Currently there is 5 different client implementations:
 
 ## Usage
 
+> [!NOTE]
+> Don't forget to make sure your [fish-lsp](https://github.com/ndonfris/fish-lsp/) command is working
+>
+> ```fish
+> fish-lsp start
+> ```
+
 1. clone the repository into the `~/.config` directory
 
 ```fish
 git clone https://github.com/ndonfris/fish-lsp-language-clients.git \
 ~/.config/nvim-fish-lsp-language-client/
-
 ```
+
 2. choose a client
 
 ```fish
@@ -39,14 +49,8 @@ git checkout <CLIENT>
 > client can be `kickstart`, `native-nvim`, `coc-example`, `coc-minimal`, or
 > `helix`
 
-
-3. Don't forget to make sure your [fish-lsp](https://github.com/ndonfris/fish-lsp/) command is working
-
-```fish
-fish-lsp start
-```
-
 ## Contributing
+
 If you would like to contribute, please open an issue or a pull request.
 Non neovim client implementations are done by accessing the LSP server directly
 through either command:
@@ -54,6 +58,7 @@ through either command:
 ```fish
 fish-lsp start
 ```
+
 or
 
 ```fish
