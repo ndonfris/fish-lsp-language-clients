@@ -7,7 +7,7 @@ Currently, there are 5 different client implementations:
 
 - [x] [helix](https://github.com/ndonfris/fish-lsp-language-clients/tree/helix)
    - setup for [helix](https://helix-editor.com/)
-   - uses [languages.toml](https://github.com/ndonfris/fish-lsp-language-clients/tree/helix/langauges.toml) example
+   - uses [languages.toml](https://github.com/ndonfris/fish-lsp-language-clients/blob/helix/languages.toml) example
 - [x] [kickstart](https://github.com/ndonfris/fish-lsp-language-clients/tree/kickstart)
     - uses [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim) as starting point
     - uses [lazy](https://github.com/folke/lazy.nvim) for lazy loading plugins
