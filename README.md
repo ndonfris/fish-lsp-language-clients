@@ -1,6 +1,6 @@
 # fish-lsp-language-clients
 
-> More information about the helix client installation, can be found [here](https://github.com/ndonfris/fish-lsp/discussions/18#discussioncomment-9585430)
+> More information about the __helix client installation__, can be found at the [discussion here](https://github.com/ndonfris/fish-lsp/discussions/18#discussioncomment-9585430)
 
 A collection of lsp-clients for the [fish language server](https://github.com/ndonfris/fish-lsp.git).
 
@@ -21,7 +21,8 @@ Currently there is 5 different client implementations:
     - coc-settings.json includes fish-lsp
 - [x] [helix](https://github.com/ndonfris/fish-lsp-language-clients/tree/helix)
    - setup for [helix](https://helix-editor.com/)
-   - uses [languages.toml](https://github.com/ndonfris/fish-lsp-language-clients/tree/helix/langauges.toml) example
+   - uses [languages.toml](https://github.com/ndonfris/fish-lsp-language-clients/blob/helix/languages.toml) example
+
 
 ## Usage
 
