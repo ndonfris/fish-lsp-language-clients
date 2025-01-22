@@ -3,8 +3,11 @@
 
 A collection of lsp-clients for the [fish language server](https://github.com/ndonfris/fish-lsp.git).
 
-Currently, there are 5 different client implementations:
+Currently, there are 6 different client implementations:
 
+- [x] [vscode](https://marketplace.visualstudio.com/items?itemName=ndonfris.fish-lsp)
+    - setup for [vscode](https://code.visualstudio.com/)
+    - uses [vscode-fish-lsp](https://github.com/ndonfris/vscode-fish-lsp) repo for vscode extension
 - [x] [helix](https://github.com/ndonfris/fish-lsp-language-clients/tree/helix)
    - setup for [helix](https://helix-editor.com/)
    - uses [languages.toml](https://github.com/ndonfris/fish-lsp-language-clients/blob/helix/languages.toml) example
