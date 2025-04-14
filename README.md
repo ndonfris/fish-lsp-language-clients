@@ -24,6 +24,10 @@ Currently, there are 6 different client implementations:
 - [x] [coc-minimal](https://github.com/ndonfris/fish-lsp-language-clients/tree/coc-minimal)
     - includes the default coc.nvim setup
     - coc-settings.json includes fish-lsp
+- [ ] [BBEdit](https://github.com/ndonfris/fish-lsp-language-clients/tree/bbedit)
+    - includes [language modules/fish.plist] for fish language support
+    - includes documentation for hooking up the language server to BBEdit
+
 
 ## Usage
 
@@ -44,8 +48,8 @@ git clone https://github.com/ndonfris/fish-lsp-language-clients.git \
 # git branch -a
 git checkout <CLIENT>
 ```
-> client can be `kickstart`, `native-nvim`, `coc-example`, `coc-minimal` or
-> `helix`
+> client can be `kickstart`, `native-nvim`, `coc-example`, `coc-minimal`
+> `helix` or `BBEdit`
 
 3. Setup the client if necessary _(varies across each setup)_
 
@@ -56,6 +60,8 @@ git checkout <CLIENT>
 | coc-example | `:PlugInstall` |
 | coc-minimal | `:PlugInstall` |
 | helix | `N/A` | 
+| vscode | `N/A` |
+| BBEdit | `add fish-lsp to language settings` |
 
 4. __(NEOVIM ONLY)__ Open the client (take advantage of the `NVIM_APPNAME` environment variable)
 ```fish
