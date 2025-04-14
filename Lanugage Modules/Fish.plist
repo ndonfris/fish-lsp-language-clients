@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+    "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+
+<dict>
+
+    <!-- Identification -->
+    <key>BBEditDocumentType</key>               <string>CodelessLanguageModule</string>
+    <key>BBLMLanguageDisplayName</key>          <string>Fish Script</string>
+    <key>BBLMLanguageCode</key>                 <string>fish</string>
+
+    <!-- File Mapping -->
+    <key>BBLMSuffixMap</key>
+    <array>
+        <dict>
+            <key>BBLMLanguageSuffix</key>       <string>.fish</string>
+        </dict>
+    </array>
+
+    <key>BBLMPreferredFilenameExtension</key>   <string>fish</string>
+
+    <!-- Services -->
+    <key>BBLMSupportsTextCompletion</key>       <true/>
+    <key>BBLMCanSpellCheckCodeRuns</key>        <false/>
+
+    <key>BBLMReferenceSearchURLTemplate</key>
+    <string>https://fishshell.com/docs/current/cmds/__SYMBOLNAME__.html#cmd-__SYMBOLNAME__</string>
+
+    <key>BBLMIsCaseSensitive</key>              <true/>
+    <key>BBLMScansFunctions</key>               <true/>
+
+    <!-- Controlling Syntax Coloring -->
+    <key>BBLMColorsSyntax</key>                 <true/>
+
+    <key>BBLMKeywordList</key>
+    <array>
+        <!-- These are fish's "core keywords":
+             https://fishshell.com/docs/current/commands.html#keywords -->
+        <string>if</string>
+        <string>else</string>
+        <string>for</string>
+        <string>while</string>
+        <string>break</string>
+        <string>continue</string>
+        <string>function</string>
+        <string>return</string>
+        <string>begin</string>
+        <string>end</string>
+        <string>and</string>
+        <string>or</string>
+        <string>not</string>
+        <string>switch</string>
+        <string>case</string>
+    </array>
+
+    <key>BBLMPredefinedNameList</key>
+    <array>
+        <!-- And this is every other command fish knows:
+             https://fishshell.com/docs/current/commands.html#the-full-list -->
+        <string>_</string>
+        <string>abbr</string>
+        <string>alias</string>
+        <string>argparse</string>
+        <string>bg</string>
+        <string>bind</string>
+        <string>block</string>
+        <string>breakpoint</string>
+        <string>builtin</string>
+        <string>cd</string>
+        <string>cdh</string>
+        <string>command</string>
+        <string>commandline</string>
+        <string>complete</string>
+        <string>contains</string>
+        <string>count</string>
+        <string>dirh</string>
+        <string>dirs</string>
+        <string>disown</string>
+        <string>echo</string>
+        <string>emit</string>
+        <string>eval</string>
+        <string>exec</string>
+        <string>exit</string>
+        <string>false</string>
+        <string>fg</string>
+        <string>fish</string>
+        <string>fish_add_path</string>
+        <string>fish_breakpoint_prompt</string>
+        <string>fish_command_not_found</string>
+        <string>fish_config</string>
+        <string>fish_git_prompt</string>
+        <string>fish_greeting</string>
+        <string>fish_hg_prompt</string>
+        <string>fish_indent</string>
+        <string>fish_is_root_user</string>
+        <string>fish_key_reader</string>
+        <string>fish_mode_prompt</string>
+        <string>fish_opt</string>
+        <string>fish_prompt</string>
+        <string>fish_right_prompt</string>
+        <string>fish_status_to_signal</string>
+        <string>fish_svn_prompt</string>
+        <string>fish_title</string>
+        <string>fish_update_completions</string>
+        <string>fish_vcs_prompt</string>
+        <string>funced</string>
+        <string>funcsave</string>
+        <string>functions</string>
+        <string>help</string>
+        <string>history</string>
+        <string>isatty</string>
+        <string>jobs</string>
+        <string>math</string>
+        <string>nextd</string>
+        <string>open</string>
+        <string>popd</string>
+        <string>prevd</string>
+        <string>printf</string>
+        <string>prompt_hostname</string>
+        <string>prompt_login</string>
+        <string>prompt_pwd</string>
+        <string>psub</string>
+        <string>pushd</string>
+        <string>pwd</string>
+        <string>random</string>
+        <string>read</string>
+        <string>realpath</string>
+        <string>set</string>
+        <string>set_color</string>
+        <string>source</string>
+        <string>status</string>
+        <string>string</string>
+        <string>string-collect</string>
+        <string>string-escape</string>
+        <string>string-join</string>
+        <string>string-join0</string>
+        <string>string-length</string>
+        <string>string-lower</string>
+        <string>string-match</string>
+        <string>string-pad</string>
+        <string>string-repeat</string>
+        <string>string-replace</string>
+        <string>string-split</string>
+        <string>string-split0</string>
+        <string>string-sub</string>
+        <string>string-trim</string>
+        <string>string-unescape</string>
+        <string>string-upper</string>
+        <string>suspend</string>
+        <string>test</string>
+        <string>time</string>
+        <string>trap</string>
+        <string>true</string>
+        <string>type</string>
+        <string>ulimit</string>
+        <string>umask</string>
+        <string>vared</string>
+        <string>wait</string>
+    </array>
+
+    <key>BBLMKeywordPatterns</key>
+    <array>
+        <dict>
+            <key>RunKind</key>
+            <string>com.barebones.bblm.variable</string>
+            <key>Pattern</key>
+            <string>\$[A-Za-z0-9_]+</string>
+        </dict>
+    </array>
+
+
+    <!-- Un/Comment Tokens -->
+    <key>BBLMCommentLineDefault</key>       <string>#</string>
+
+    <!-- Language Features -->
+    <key>Language Features</key>
+    <dict>
+        <key>Identifier and Keyword Character Class</key>
+        <string>A-Za-z0-9_\$</string>
+
+        <key>Comment Pattern</key>
+        <string><![CDATA[
+            (?x:
+                \#.+$
+            )
+        ]]></string>
+
+        <key>String Pattern</key>
+        <string><![CDATA[
+            (?x:
+                ("(\\"|[^"\r]|\\\r)*")  (?# Double-quote)
+                    |
+                ('(\\'|[^'\r]|\\\r)*')  (?# Single-quote)
+            )
+        ]]></string>
+
+        <key>Function Pattern</key>
+        <string><![CDATA[
+            (?msx:
+                (?P<indent_level>
+                    (?P<whitespace>\h*)
+                )
+                function
+
+                (?P>whitespace)
+
+                (?P<function_name>
+                    (?:[a-zA-Z_][a-zA-Z0-9_]*)
+                )
+
+                (?P<function>
+                    (?P>whitespace)
+
+                    (?P<function_opts>
+                        (?:
+                            --?
+                            [A-Za-z]+
+                            (?P>whitespace)
+                            [\S\h]*         (?# any non-whitespace character, or a space,
+                                                but not a newline)
+                        )*
+                    )
+
+                    (?P<linebreak>(?:\v|;))
+
+                    (?P<function_body>
+                        .+?
+                    )
+
+                    (?P>linebreak)
+                )
+
+                (?# Horrible hack alert: this looks for an "end" token on the same indent as
+                    the "function" token -- because functions can contain other things that
+                    are also terminated with "end", e.g. if…end blocks, which BBEdit would
+                    otherwise detect as the end of the function.)
+                (?P<function_terminator>
+                    (?:
+                        ^(?P=indent_level)end
+                    )
+                )
+            )
+        ]]></string>
+
+        <key>Skip Pattern</key>
+        <string><![CDATA[
+            (?x:
+                (?P>comment)|(?P>string)
+            )
+        ]]></string>
+
+    </dict>
+</dict>
+</plist>
