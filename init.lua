@@ -82,6 +82,8 @@ vim.o.cmdheight = 1             -- Set command line height
 vim.o.signcolumn = 'yes'        -- Always show the sign column
 vim.o.foldenable = false        -- Disable folding by default
 
+vim.o.updatetime = 300          -- Set update time for CursorHold
+
 --------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
@@ -204,6 +206,35 @@ vim.api.nvim_create_autocmd("FileType", {
 ---- │ fish-lsp │
 ---- └──────────┘
 
+-- Function to set up document highlight
+local function setup_document_highlight(client, bufnr)
+  -- Check if client supports documentHighlight
+  if client.server_capabilities.documentHighlightProvider then
+    -- Create a highlight group for document highlights
+    vim.api.nvim_set_hl(0, "LspReferenceText", { bg = "#3c3836" })
+    vim.api.nvim_set_hl(0, "LspReferenceRead", { bg = "#3c3836" })
+    vim.api.nvim_set_hl(0, "LspReferenceWrite", { bg = "#3c3836" })
+    
+    -- Create autocommands for highlight on cursor hold
+    local highlight_group = vim.api.nvim_create_augroup("LspDocumentHighlight", { clear = true })
+    
+    vim.api.nvim_create_autocmd("CursorHold", {
+      group = highlight_group,
+      buffer = bufnr,
+      callback = function()
+        vim.lsp.buf.document_highlight()
+      end
+    })
+    
+    vim.api.nvim_create_autocmd("CursorMoved", {
+      group = highlight_group,
+      buffer = bufnr,
+      callback = function()
+        vim.lsp.buf.clear_references()
+      end
+    })
+  end
+end
 -- Minimal Neovim config for Fish LSP support (Neovim v0.10.4)
 
 -- Set up lsp for fish files
@@ -217,6 +248,10 @@ vim.api.nvim_create_autocmd('FileType', {
       filetypes = { 'fish' },
       root_dir = vim.fs.dirname(vim.fs.find({ '.git', 'fish' }, { upward = true })[1]),
       capabilities = vim.lsp.protocol.make_client_capabilities(),
+      on_attach = function(client, bufnr)
+	-- Set up document highlight
+	setup_document_highlight(client, bufnr)
+      end,
     })
 
     -- Attach client to current buffer
@@ -271,6 +306,10 @@ vim.api.nvim_create_autocmd('FileType', {
       --       @see https://github.com/nvim-treesitter/nvim-treesitter
       vim.keymap.set("n", "<leader>i", "<cmd>Inspect<cr>", fish_keymap_opts)
       vim.keymap.set("n", "<leader>ii", "<cmd>InspectTree<cr>", fish_keymap_opts)
+
+      if vim.lsp.buf.documentHighlight then
+      	vim.keymap.set("n", "<leader>h", vim.lsp.buf.document_highlight, fish_keymap_opts)
+      end
     end
   end
 })
