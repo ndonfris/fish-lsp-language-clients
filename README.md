@@ -23,7 +23,7 @@ Currently, there are 7 different client implementations included on [branches](h
 - [x] [vscode](https://marketplace.visualstudio.com/items?itemName=ndonfris.fish-lsp)
     - setup for [vscode](https://code.visualstudio.com/)
     - uses [vscode-fish-lsp](https://github.com/ndonfris/vscode-fish-lsp) repo for vscode extension
-- [ ] [BBEdit](https://github.com/ndonfris/fish-lsp-language-clients/tree/bbedit)
+- [x] [BBEdit](https://github.com/ndonfris/fish-lsp-language-clients/tree/bbedit)
     - includes [language modules/fish.plist] for fish language support
     - includes documentation for hooking up the language server to BBEdit
 
