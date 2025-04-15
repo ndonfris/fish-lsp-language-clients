@@ -20,6 +20,9 @@ Currently, there are 7 different client implementations included on [branches](h
 - [x] [coc-minimal](https://github.com/ndonfris/fish-lsp-language-clients/tree/coc-minimal)
     - includes the default coc.nvim setup
     - coc-settings.json includes fish-lsp
+- [x] [packer](https://github.com/ndonfris/fish-lsp-language-clients/tree/packer)
+    - includes packer.nvim as package manage
+    - sets up fish-lsp as a language server with keybinds
 - [x] [vscode](https://marketplace.visualstudio.com/items?itemName=ndonfris.fish-lsp)
     - setup for [vscode](https://code.visualstudio.com/)
     - uses [vscode-fish-lsp](https://github.com/ndonfris/vscode-fish-lsp) repo for vscode extension
@@ -51,7 +54,7 @@ git clone https://github.com/ndonfris/fish-lsp-language-clients.git \
 # git branch -a
 git checkout <CLIENT>
 ```
-> client can be `kickstart`, `native-nvim`, `coc-example`, `coc-minimal`
+> client can be `kickstart`, `native-nvim`, `coc-example`, `coc-minimal`, `packer`
 
 3. Write an alias to use the client you've checked out, inside neovim
 
@@ -64,6 +67,7 @@ alias flc-conf='NVIM_APPNAME=fish-lsp-language-clients nvim ~/.config/fish/confi
 | Client | Setup |
 | --- | --- |
 | native-nvim | `N/A` |
+| packer | `N/A` |
 | kickstart | `:Lazy` |
 | coc-example | `:PlugInstall` |
 | coc-minimal | `:PlugInstall` |
