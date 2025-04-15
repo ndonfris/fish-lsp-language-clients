@@ -6,8 +6,8 @@ plugins or anything besides using a `neovim` version >= 0.8.0.
 ## Usage
 
 ```fish
-NVIM_APPNAME=fish-lsp-language-client nvim ~/.config/fish/config.fish
-alias fllc="NVIM_APPNAME=fish-lsp-language-client nvim ~/.config/fish/config.fish"
+NVIM_APPNAME=fish-lsp-language-clients nvim ~/.config/fish/config.fish
+alias flc-conf="NVIM_APPNAME=fish-lsp-language-clients nvim ~/.config/fish/config.fish"
 ```
 
 ## Keymaps
