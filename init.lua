@@ -283,3 +283,5 @@ vim.filetype.add({
 })
 
 -- ... anything else ...
+require('plugins')
+require('theme')
