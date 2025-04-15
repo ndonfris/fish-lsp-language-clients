@@ -1,9 +1,8 @@
 ---- TABLE OF CONTENTS
 ----   1.) defaults
-----   2.) vim-plug & plugins
-----   3.) coc.nvim
-----   4.) keymaps
-----   5.) other-stuff
+----   2.) keymaps
+----   3.) setting up fish-lsp
+----   4.) anything else
 
 ---- ┌──────────┐
 ---- │ defaults │
@@ -69,9 +68,6 @@ vim.g.python3_host_prog = '/usr/bin/python3'
 vim.o.ignorecase = true             -- Case insensitive searching
 vim.o.smartcase = true
 
--- Completion settings
-vim.o.complete = vim.o.complete .. ',kspell'
-
 -- Completeopt settings
 vim.o.completeopt = 'menu,menuone,noselect'
 vim.o.shortmess = vim.o.shortmess .. 'c'
@@ -95,31 +91,24 @@ vim.o.foldenable = false        -- Disable folding by default
 ---- │ keymaps │
 ---- └─────────┘
 M = {}
-local opts = { noremap = true, silent = true }
+local global_keymap_opts = { noremap = true, silent = true }
 
-local term_opts = { silent = true }
-
--- Shorten function name
-local keymap = vim.api.nvim_set_keymap
-
-
-keymap("n", "<Space>", "", opts)
+vim.keymap.set("n", "<Space>", "", global_keymap_opts)
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 -- window movement
-keymap("n", "<C-h>", "<C-w>h", opts)
-keymap("n", "<C-j>", "<C-w>j", opts)
-keymap("n", "<C-k>", "<C-w>k", opts)
-keymap("n", "<C-l>", "<C-w>l", opts)
+vim.keymap.set("n", "<C-h>", "<C-w>h", global_keymap_opts)
+vim.keymap.set("n", "<C-j>", "<C-w>j", global_keymap_opts)
+vim.keymap.set("n", "<C-k>", "<C-w>k", global_keymap_opts)
+vim.keymap.set("n", "<C-l>", "<C-w>l", global_keymap_opts)
 
 -- Move to Beginning/End of Line
-keymap("n", "H", "^", opts)
-keymap("n", "L", "$", opts)
-keymap("v", "H", "^", opts) -- visual mode
-keymap("v", "L", "$", opts) -- visual mode
-
+vim.keymap.set("n", "H", "^", global_keymap_opts)
+vim.keymap.set("n", "L", "$", global_keymap_opts)
+vim.keymap.set("v", "H", "^", global_keymap_opts) -- visual mode
+vim.keymap.set("v", "L", "$", global_keymap_opts) -- visual mode
 
 -- map <C-c> to <esc>
 vim.cmd [[
@@ -132,28 +121,165 @@ vim.cmd [[
 ]]
 
 -- Turn off search highlights
-keymap('n', '<C-c><C-c>', "<cmd>noh<cr>", opts)
+vim.keymap.set('n', '<C-c><C-c>', "<cmd>noh<cr>", global_keymap_opts)
 
 -- Stay in indent mode
-keymap("v", "<", "<gv", opts) -- visual mode
-keymap("v", ">", ">gv", opts) -- visual mode
+vim.keymap.set("v", "<", "<gv", global_keymap_opts) -- visual mode
+vim.keymap.set("v", ">", ">gv", global_keymap_opts) -- visual mode
 
 -- match
-keymap("n", "m", "%", opts)
-keymap("n", "M", "g%", opts)
+vim.keymap.set("n", "m", "%", global_keymap_opts)
+vim.keymap.set("n", "M", "g%", global_keymap_opts)
 
--- inspect tree-sitter node
-keymap("n", "<leader>i", "<cmd>Inspect<cr>", opts)
-keymap("n", "<leader>ii", "<cmd>InspectTree<cr>", opts)
+-- exit
+vim.keymap.set('n', 'qq', '<cmd>qa!<cr>', global_keymap_opts)
+
+-- C-d and C-u scroll in floating windows
+vim.keymap.set('n', '<C-d>', function()
+  require('hover_scroll').scroll_hover('<C-f>', '<C-d>')
+end, { noremap = true, silent = true })
+vim.keymap.set('n', '<C-u>', function()
+  require('hover_scroll').scroll_hover('<C-b>', '<C-u>')
+end, { noremap = true, silent = true })
+
+local completion_handler = require('completion_utils').completion_handler
+local completion_expr_opts = require('completion_utils').expr_opts
+
+-- -- Map Ctrl+Space to trigger completion in insert mode
+vim.keymap.set('i', '<C-Space>', completion_handler, completion_expr_opts)
+vim.keymap.set('i', '<C-@>', completion_handler, completion_expr_opts)
+
+-- Make C-d/C-u scroll down/up 10 items in the completion menu
+vim.keymap.set('i', '<C-u>', require('completion_utils').c_u_insert_scroll, completion_expr_opts)
+vim.keymap.set('i', '<C-d>', require('completion_utils').c_d_insert_scroll, completion_expr_opts)
+
+-- c-j/c-k move up and down in completion menu
+vim.keymap.set('i', '<C-j>', '<C-n>', global_keymap_opts)
+vim.keymap.set('i', '<C-k>', '<C-p>', global_keymap_opts)
+
+-- c-h/c-BS delete word in insert mode
+vim.keymap.set('i', '<C-h>', '<C-w>', { noremap = true })
+vim.keymap.set('i', '<C-BS>', '<C-w>', { noremap = true })
 
 --------------------------------------------------------------------------------
 
 --------------------------------------------------------------------------------
+---- ┌──────────────────┐
+---- │ style hover docs │
+---- └──────────────────┘
 
-vim.cmd[[
-  autocmd VimEnter,BufNewFile *.fish setlocal ft=fish
-]]
+vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
+  vim.lsp.handlers.hover, {
+    -- Use a bordered window
+    border = "rounded",
+    -- Enable Markdown rendering
+    markdown = {
+      -- Enable conceal
+      highlight = {
+        enable = true,
+        conceallevel = 2,
+        concealcursor = "n"
+      }
+    }
+  }
+)
+
+-- Set global conceal options (affects all buffers)
+vim.opt.conceallevel = 2
+vim.opt.concealcursor = "n"
+
+-- Create autocommand to set conceal options for Markdown in floating windows
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  callback = function()
+    vim.opt_local.conceallevel = 2
+    vim.opt_local.concealcursor = "n"
+  end
+})
+
+--------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------
+---- ┌──────────┐
+---- │ fish-lsp │
+---- └──────────┘
+
+-- Minimal Neovim config for Fish LSP support (Neovim v0.10.4)
+
+-- Set up lsp for fish files
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'fish',
+  callback = function()
+    -- Configure fish-language-server
+    local client = vim.lsp.start({
+      name = 'fish',
+      cmd = { 'fish-lsp', 'start' },
+      filetypes = { 'fish' },
+      root_dir = vim.fs.dirname(vim.fs.find({ '.git', 'fish' }, { upward = true })[1]),
+      capabilities = vim.lsp.protocol.make_client_capabilities(),
+    })
+
+    -- Attach client to current buffer
+    if client then
+      vim.lsp.buf_attach_client(0, client)
+      --- ┌─────────────┐
+      --- │ lsp keymaps │
+      --- └─────────────┘
+      -- Local keybindings for LSP features
+      local fish_keymap_opts = { buffer = true, noremap = true, silent = true }
+      --  go-to definition
+      if vim.lsp.buf.definition then
+	vim.keymap.set('n', 'gd', vim.lsp.buf.definition, fish_keymap_opts)
+      end
+      -- go-to implementation
+      if vim.lsp.buf.implementation then
+	vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, fish_keymap_opts)
+      end
+      -- hover
+      if vim.lsp.buf.hover then
+	vim.keymap.set('n', 'gs', vim.lsp.buf.hover, fish_keymap_opts)
+	vim.keymap.set('n', 'K', vim.lsp.buf.hover, fish_keymap_opts)
+	-- Make Ctrl+d and Ctrl+u scroll hover documentation if visible in normal mode
+
+      end
+      -- go-to reference
+      if vim.lsp.buf.references then
+	vim.keymap.set("n", "gr", vim.lsp.buf.references, fish_keymap_opts)
+      end
+      -- rename
+      if vim.lsp.buf.rename then
+	vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, fish_keymap_opts)
+      end
+      -- code actions
+      if vim.lsp.buf.code_action then
+	vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, fish_keymap_opts)
+	vim.keymap.set('n', 'gca', vim.lsp.buf.code_action, fish_keymap_opts)
+      end
+      -- format
+      if vim.lsp.buf.format then
+	vim.keymap.set('n', '<leader>f', function()
+	  vim.lsp.buf.format({ async = true })
+	end, fish_keymap_opts)
+      end
+      -- signature help
+      if vim.lsp.buf.signature_help then
+	vim.keymap.set('n', '<leader>s', vim.lsp.buf.signature_help, fish_keymap_opts)
+	vim.keymap.set('i', '<C-s>', vim.lsp.buf.signature_help, fish_keymap_opts)
+      end
+      -- inspecting tree-sitter nodes
+      -- note: you might have to install the tree-sitter-fish language file for this to work
+      --       @see https://github.com/nvim-treesitter/nvim-treesitter
+      vim.keymap.set("n", "<leader>i", "<cmd>Inspect<cr>", fish_keymap_opts)
+      vim.keymap.set("n", "<leader>ii", "<cmd>InspectTree<cr>", fish_keymap_opts)
+    end
+  end
+})
+
+-- Optional: Set some basic fish file detection if needed
+vim.filetype.add({
+  extension = {
+    fish = 'fish',
+  },
+})
 
 -- ... anything else ...
-keymap("n", "gs", "<cmd>lua vim.lsp.buf.hover()<cr>", opts)
-keymap("n", "gr", "<cmd>lua vim.lsp.buf.refrences()<cr>", opts)
