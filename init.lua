@@ -35,7 +35,7 @@ vim.o.splitright = true       -- Vertical splits to the right of current window
 vim.o.cindent = true          -- Stricter C syntax
 -- vim.o.cinwords = ''        -- Uncomment and adjust as needed
 vim.o.expandtab = true        -- Use spaces instead of tabs
-vim.o.tabstop = 8             -- Number of spaces tabs count for
+vim.o.tabstop = 4             -- Number of spaces tabs count for
 vim.o.shiftwidth = 4          -- Number of spaces to use for autoindent
 vim.o.softtabstop = 4
 vim.o.smartindent = true      -- Enable smart indent
@@ -80,11 +80,13 @@ vim.o.compatible = false
 vim.o.cmdheight = 1             -- Set command line height
 -- vim.o.laststatus = 3            -- Set global status line
 vim.o.signcolumn = 'yes'        -- Always show the sign column
-vim.o.foldenable = false        -- Disable folding by default
-
+vim.o.foldenable = false
 vim.o.updatetime = 300          -- Set update time for CursorHold
 
 --------------------------------------------------------------------------------
+vim.o.foldmethod = 'expr'
+-- Default to treesitter folding
+vim.o.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 
 --------------------------------------------------------------------------------
 
@@ -100,18 +102,6 @@ vim.keymap.set("n", "<Space>", "", global_keymap_opts)
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
--- window movement
-vim.keymap.set("n", "<C-h>", "<C-w>h", global_keymap_opts)
-vim.keymap.set("n", "<C-j>", "<C-w>j", global_keymap_opts)
-vim.keymap.set("n", "<C-k>", "<C-w>k", global_keymap_opts)
-vim.keymap.set("n", "<C-l>", "<C-w>l", global_keymap_opts)
-
--- Move to Beginning/End of Line
-vim.keymap.set("n", "H", "^", global_keymap_opts)
-vim.keymap.set("n", "L", "$", global_keymap_opts)
-vim.keymap.set("v", "H", "^", global_keymap_opts) -- visual mode
-vim.keymap.set("v", "L", "$", global_keymap_opts) -- visual mode
-
 -- map <C-c> to <esc>
 vim.cmd [[
   map <C-c> <esc>
@@ -121,6 +111,35 @@ vim.cmd [[
   vnoremap <C-c> <esc>
   cnoremap <C-c> <esc>
 ]]
+
+-- window movement
+vim.keymap.set("n", "<C-h>", "<C-w>h", global_keymap_opts)
+vim.keymap.set("n", "<C-j>", "<C-w>j", global_keymap_opts)
+vim.keymap.set("n", "<C-k>", "<C-w>k", global_keymap_opts)
+vim.keymap.set("n", "<C-l>", "<C-w>l", global_keymap_opts)
+
+-- split buffer keymaps
+vim.keymap.set('n', '<leader>|', '<cmd>vsplit<cr>', global_keymap_opts)
+vim.keymap.set('n', '<leader>_', '<cmd>split<cr>', global_keymap_opts)
+
+-- buffer movement
+vim.keymap.set('n', '<C-n>', '<cmd>bn<cr>', { noremap = true })
+vim.keymap.set('n', '<C-p>', '<cmd>bp<cr>', { noremap = true })
+
+-- Close quickfix windows with <C-c>
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "qf",
+  callback = function()
+    vim.keymap.set('n', '<C-c>', '<cmd>close<cr>', { noremap = true, buffer = true, silent = true, nowait = true })
+  end
+})
+
+
+-- Move to Beginning/End of Line
+vim.keymap.set("n", "H", "^", global_keymap_opts)
+vim.keymap.set("n", "L", "$", global_keymap_opts)
+vim.keymap.set("v", "H", "^", global_keymap_opts) -- visual mode
+vim.keymap.set("v", "L", "$", global_keymap_opts) -- visual mode
 
 -- Turn off search highlights
 vim.keymap.set('n', '<C-c><C-c>', "<cmd>noh<cr>", global_keymap_opts)
@@ -150,6 +169,10 @@ local completion_expr_opts = require('completion_utils').expr_opts
 -- -- Map Ctrl+Space to trigger completion in insert mode
 vim.keymap.set('i', '<C-Space>', completion_handler, completion_expr_opts)
 vim.keymap.set('i', '<C-@>', completion_handler, completion_expr_opts)
+--vim.cmd[[set completeopt+=menuone,noselect,popup]]
+--vim.keymap.set('i', '<C-space>', function()
+--  vim.lsp.completion.get()
+--end)
 
 -- Make C-d/C-u scroll down/up 10 items in the completion menu
 vim.keymap.set('i', '<C-u>', require('completion_utils').c_u_insert_scroll, completion_expr_opts)
@@ -169,35 +192,47 @@ vim.keymap.set('i', '<C-BS>', '<C-w>', { noremap = true })
 ---- ┌──────────────────┐
 ---- │ style hover docs │
 ---- └──────────────────┘
+-- Enable concealing of markdown characters
 
+-- Set conceal specifically for markdown files
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  callback = function()
+    vim.o.conceallevel = 3
+    -- vim.cmd()
+    -- vim.opt_local.conceallevel = 2
+  end
+})
+
+
+-- Configure LSP hover documentation with markdown concealing
 vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
-  vim.lsp.handlers.hover, {
-    -- Use a bordered window
+  (vim.lsp.handlers.hover), {
     border = "rounded",
-    -- Enable Markdown rendering
+    -- result = vim.lsp.util.convert_input_to_markdown_lines,
+
+    -- Set markdown rendering options
+    -- stylize_markdown = false,
     markdown = {
-      -- Enable conceal
+      -- Use treesitter for syntax highlighting in hover docs
       highlight = {
-        enable = true,
-        conceallevel = 2,
-        concealcursor = "n"
-      }
+	enable = true,
+	--     additional_vim_regex_highlighting = true,
+      },
+      --   -- Configure concealing for the hover window
+      -- conceallevel = 2,
+      --   conceal = 'all'
     }
   }
 )
 
--- Set global conceal options (affects all buffers)
-vim.opt.conceallevel = 2
-vim.opt.concealcursor = "n"
 
--- Create autocommand to set conceal options for Markdown in floating windows
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "markdown",
-  callback = function()
-    vim.opt_local.conceallevel = 2
-    vim.opt_local.concealcursor = "n"
-  end
-})
+vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
+  vim.lsp.handlers.signature_help, {
+    -- Use a sharp border with `FloatBorder` highlights
+    border = "single"
+  }
+)
 
 --------------------------------------------------------------------------------
 
@@ -214,23 +249,23 @@ local function setup_document_highlight(client, bufnr)
     vim.api.nvim_set_hl(0, "LspReferenceText", { bg = "#3c3836" })
     vim.api.nvim_set_hl(0, "LspReferenceRead", { bg = "#3c3836" })
     vim.api.nvim_set_hl(0, "LspReferenceWrite", { bg = "#3c3836" })
-    
+
     -- Create autocommands for highlight on cursor hold
     local highlight_group = vim.api.nvim_create_augroup("LspDocumentHighlight", { clear = true })
-    
+
     vim.api.nvim_create_autocmd("CursorHold", {
       group = highlight_group,
       buffer = bufnr,
       callback = function()
-        vim.lsp.buf.document_highlight()
+	vim.lsp.buf.document_highlight()
       end
     })
-    
+
     vim.api.nvim_create_autocmd("CursorMoved", {
       group = highlight_group,
       buffer = bufnr,
       callback = function()
-        vim.lsp.buf.clear_references()
+	vim.lsp.buf.clear_references()
       end
     })
   end
@@ -262,6 +297,17 @@ vim.api.nvim_create_autocmd('FileType', {
       --- └─────────────┘
       -- Local keybindings for LSP features
       local fish_keymap_opts = { buffer = true, noremap = true, silent = true }
+
+      --  inlay hint
+      vim.lsp.inlay_hint.enable(true)
+
+      -- hold color highlighting
+      vim.cmd([[
+	autocmd CursorHold  <buffer> lua vim.lsp.buf.document_highlight()
+	autocmd CursorHoldI <buffer> lua vim.lsp.buf.document_highlight()
+	autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
+      ]])
+
       --  go-to definition
       if vim.lsp.buf.definition then
 	vim.keymap.set('n', 'gd', vim.lsp.buf.definition, fish_keymap_opts)
@@ -308,8 +354,17 @@ vim.api.nvim_create_autocmd('FileType', {
       vim.keymap.set("n", "<leader>ii", "<cmd>InspectTree<cr>", fish_keymap_opts)
 
       if vim.lsp.buf.documentHighlight then
-      	vim.keymap.set("n", "<leader>h", vim.lsp.buf.document_highlight, fish_keymap_opts)
+	vim.keymap.set("n", "<leader>h", vim.lsp.buf.document_highlight, fish_keymap_opts)
       end
+
+      -- folding
+      vim.b.foldexpr = 'v:lua.vim.lsp.foldexpr()'
+      vim.keymap.set('n', "gfo", function()
+	vim.o.foldenable = not vim.o.foldenable
+	if (vim.o.foldenable) then
+	  vim.b.foldexpr = 'v:lua.vim.lsp.foldexpr()'
+	end
+      end, fish_keymap_opts)
     end
   end
 })
@@ -324,3 +379,4 @@ vim.filetype.add({
 -- ... anything else ...
 require('plugins')
 require('theme')
+require('treesitter')

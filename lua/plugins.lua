@@ -18,6 +18,7 @@ return require('packer').startup(function(use)
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
 
+  -- icons 
   use 'nvim-tree/nvim-web-devicons'
 
   -- You can alias plugin names
@@ -26,6 +27,30 @@ return require('packer').startup(function(use)
 
   -- Post-install/update hook with neovim command
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
+
+  -- conceal markdown in hover docs
+  use({
+    'MeanderingProgrammer/render-markdown.nvim',
+    after = { 'nvim-treesitter' },
+    -- requires = { 'echasnovski/mini.nvim', opt = true }, -- if you use the mini.nvim suite
+    -- requires = { 'echasnovski/mini.icons', opt = true }, -- if you use standalone mini plugins
+    requires = { 'nvim-tree/nvim-web-devicons', opt = true }, -- if you prefer nvim-web-devicons
+    config = function()
+      require('render-markdown').setup({
+        overrides = {
+          buftype = {
+            nofile = {
+              code = {
+                style = 'normal',
+		lang = '',
+                border = 'hide',
+              },
+            },
+          },
+        },
+      })
+    end,
+  })
 
   if packer_bootstrap then
     require('packer').sync()
