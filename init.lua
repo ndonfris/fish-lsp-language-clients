@@ -375,8 +375,10 @@ vim.filetype.add({
     fish = 'fish',
   },
 })
-
+--
+-- Add this to your Neovim configuration (e.g., init.lua or a plugin file)
 -- ... anything else ...
 require('plugins')
 require('theme')
 require('treesitter')
+require('commands')
