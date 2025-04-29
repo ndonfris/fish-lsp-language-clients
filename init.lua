@@ -12,6 +12,7 @@ vim.cmd('syntax on')
 vim.cmd('syntax enable')
 
 -- Enable filetype plugins and indenting
+vim.cmd('filetype on')
 vim.cmd('filetype plugin indent on')
 
 -- Additional syntax settings
@@ -35,6 +36,7 @@ vim.o.splitright = true       -- Vertical splits to the right of current window
 vim.o.cindent = true          -- Stricter C syntax
 -- vim.o.cinwords = ''        -- Uncomment and adjust as needed
 vim.o.expandtab = true        -- Use spaces instead of tabs
+
 vim.o.tabstop = 4             -- Number of spaces tabs count for
 vim.o.shiftwidth = 4          -- Number of spaces to use for autoindent
 vim.o.softtabstop = 4
@@ -104,12 +106,12 @@ vim.g.maplocalleader = " "
 
 -- map <C-c> to <esc>
 vim.cmd [[
-  map <C-c> <esc>
-  nnoremap <C-c> <esc>
-  xnoremap <C-c> <esc>
-  inoremap <C-c> <esc>
-  vnoremap <C-c> <esc>
-  cnoremap <C-c> <esc>
+map <C-c> <esc>
+nnoremap <C-c> <esc>
+xnoremap <C-c> <esc>
+inoremap <C-c> <esc>
+vnoremap <C-c> <esc>
+cnoremap <C-c> <esc>
 ]]
 
 -- window movement
@@ -171,214 +173,231 @@ vim.keymap.set('i', '<C-Space>', completion_handler, completion_expr_opts)
 vim.keymap.set('i', '<C-@>', completion_handler, completion_expr_opts)
 --vim.cmd[[set completeopt+=menuone,noselect,popup]]
 --vim.keymap.set('i', '<C-space>', function()
---  vim.lsp.completion.get()
---end)
+  --  vim.lsp.completion.get()
+  --end)
 
--- Make C-d/C-u scroll down/up 10 items in the completion menu
-vim.keymap.set('i', '<C-u>', require('completion_utils').c_u_insert_scroll, completion_expr_opts)
-vim.keymap.set('i', '<C-d>', require('completion_utils').c_d_insert_scroll, completion_expr_opts)
+  -- Make C-d/C-u scroll down/up 10 items in the completion menu
+  vim.keymap.set('i', '<C-u>', require('completion_utils').c_u_insert_scroll, completion_expr_opts)
+  vim.keymap.set('i', '<C-d>', require('completion_utils').c_d_insert_scroll, completion_expr_opts)
 
--- c-j/c-k move up and down in completion menu
-vim.keymap.set('i', '<C-j>', '<C-n>', global_keymap_opts)
-vim.keymap.set('i', '<C-k>', '<C-p>', global_keymap_opts)
+  -- c-j/c-k move up and down in completion menu
+  vim.keymap.set('i', '<C-j>', '<C-n>', global_keymap_opts)
+  vim.keymap.set('i', '<C-k>', '<C-p>', global_keymap_opts)
 
--- c-h/c-BS delete word in insert mode
-vim.keymap.set('i', '<C-h>', '<C-w>', { noremap = true })
-vim.keymap.set('i', '<C-BS>', '<C-w>', { noremap = true })
+  -- c-h/c-BS delete word in insert mode
+  vim.keymap.set('i', '<C-h>', '<C-w>', { noremap = true })
+  vim.keymap.set('i', '<C-BS>', '<C-w>', { noremap = true })
 
---------------------------------------------------------------------------------
+  -- commenting
+  vim.keymap.set({ 'n', 'x', 'o' }, '<Leader>c', 'gc', { remap = true })
 
---------------------------------------------------------------------------------
----- ┌──────────────────┐
----- │ style hover docs │
----- └──────────────────┘
--- Enable concealing of markdown characters
+  --------------------------------------------------------------------------------
 
--- Set conceal specifically for markdown files
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = "markdown",
-  callback = function()
-    vim.o.conceallevel = 3
-    -- vim.cmd()
-    -- vim.opt_local.conceallevel = 2
-  end
-})
+  --------------------------------------------------------------------------------
+  ---- ┌──────────────────┐
+  ---- │ style hover docs │
+  ---- └──────────────────┘
+  -- Enable concealing of markdown characters
+
+  -- Set conceal specifically for markdown files
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = "markdown",
+    callback = function()
+      -- vim.o.conceallevel = 3
+      -- vim.cmd()
+      -- vim.o.conceallevel = 3
+    end
+  })
 
 
--- Configure LSP hover documentation with markdown concealing
-vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
+  -- Configure LSP hover documentation with markdown concealing
+  vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
   (vim.lsp.handlers.hover), {
     border = "rounded",
     -- result = vim.lsp.util.convert_input_to_markdown_lines,
-
     -- Set markdown rendering options
     -- stylize_markdown = false,
-    markdown = {
-      -- Use treesitter for syntax highlighting in hover docs
-      highlight = {
-	enable = true,
-	--     additional_vim_regex_highlighting = true,
-      },
-      --   -- Configure concealing for the hover window
-      -- conceallevel = 2,
-      --   conceal = 'all'
-    }
-  }
-)
+    --markdown = {
+      --  -- Use treesitter for syntax highlighting in hover docs
+      --  highlight = {
+        --      enable = true,
+        ----     additional_vim_regex_highlighting = true,
+        --  },
+        --  --   -- Configure concealing for the hover window
+        --  -- conceallevel = 2,
+        --  --   conceal = 'all'
+        --}
+      }
+      )
 
 
-vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
-  vim.lsp.handlers.signature_help, {
-    -- Use a sharp border with `FloatBorder` highlights
-    border = "single"
-  }
-)
+      vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
+      vim.lsp.handlers.signature_help, {
+        -- Use a sharp border with `FloatBorder` highlights
+        border = "single"
+      }
+      )
 
---------------------------------------------------------------------------------
+      --------------------------------------------------------------------------------
 
---------------------------------------------------------------------------------
----- ┌──────────┐
----- │ fish-lsp │
----- └──────────┘
+      --------------------------------------------------------------------------------
+      ---- ┌──────────┐
+      ---- │ fish-lsp │
+      ---- └──────────┘
 
--- Function to set up document highlight
-local function setup_document_highlight(client, bufnr)
-  -- Check if client supports documentHighlight
-  if client.server_capabilities.documentHighlightProvider then
-    -- Create a highlight group for document highlights
-    vim.api.nvim_set_hl(0, "LspReferenceText", { bg = "#3c3836" })
-    vim.api.nvim_set_hl(0, "LspReferenceRead", { bg = "#3c3836" })
-    vim.api.nvim_set_hl(0, "LspReferenceWrite", { bg = "#3c3836" })
+      -- Function to set up document highlight
+      local function setup_document_highlight(client, bufnr)
+        -- Check if client supports documentHighlight
+        if client.server_capabilities.documentHighlightProvider then
+          -- Create a highlight group for document highlights
+          vim.api.nvim_set_hl(0, "LspReferenceText", { bg = "#3c3836" })
+          vim.api.nvim_set_hl(0, "LspReferenceRead", { bg = "#3c3836" })
+          vim.api.nvim_set_hl(0, "LspReferenceWrite", { bg = "#3c3836" })
 
-    -- Create autocommands for highlight on cursor hold
-    local highlight_group = vim.api.nvim_create_augroup("LspDocumentHighlight", { clear = true })
+          -- Create autocommands for highlight on cursor hold
+          local highlight_group = vim.api.nvim_create_augroup("LspDocumentHighlight", { clear = true })
 
-    vim.api.nvim_create_autocmd("CursorHold", {
-      group = highlight_group,
-      buffer = bufnr,
-      callback = function()
-	vim.lsp.buf.document_highlight()
+          vim.api.nvim_create_autocmd("CursorHold", {
+            group = highlight_group,
+            buffer = bufnr,
+            callback = function()
+              vim.lsp.buf.document_highlight()
+            end
+          })
+
+          vim.api.nvim_create_autocmd("CursorMoved", {
+            group = highlight_group,
+            buffer = bufnr,
+            callback = function()
+              vim.lsp.buf.clear_references()
+            end
+          })
+        end
       end
-    })
+      -- Minimal Neovim config for Fish LSP support (Neovim v0.10.4)
 
-    vim.api.nvim_create_autocmd("CursorMoved", {
-      group = highlight_group,
-      buffer = bufnr,
-      callback = function()
-	vim.lsp.buf.clear_references()
-      end
-    })
-  end
-end
--- Minimal Neovim config for Fish LSP support (Neovim v0.10.4)
+      -- Set up lsp for fish files
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = 'fish',
+        callback = function()
+          -- Configure fish-language-server
+          local client = vim.lsp.start({
+            name = 'fish',
+            cmd = { 'fish-lsp', 'start' },
+            filetypes = { 'fish' },
+            root_dir = vim.fs.dirname(vim.fs.find({ '.git', 'fish' }, { upward = true })[1]),
+            capabilities = vim.lsp.protocol.make_client_capabilities(),
+            on_attach = function(client, bufnr)
+              -- Set up document highlight
+              setup_document_highlight(client, bufnr)
+            end,
+          })
 
--- Set up lsp for fish files
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = 'fish',
-  callback = function()
-    -- Configure fish-language-server
-    local client = vim.lsp.start({
-      name = 'fish',
-      cmd = { 'fish-lsp', 'start' },
-      filetypes = { 'fish' },
-      root_dir = vim.fs.dirname(vim.fs.find({ '.git', 'fish' }, { upward = true })[1]),
-      capabilities = vim.lsp.protocol.make_client_capabilities(),
-      on_attach = function(client, bufnr)
-	-- Set up document highlight
-	setup_document_highlight(client, bufnr)
-      end,
-    })
+          -- Attach client to current buffer
+          if client then
+            vim.lsp.buf_attach_client(0, client)
+            --- ┌─────────────┐
+            --- │ lsp keymaps │
+            --- └─────────────┘
+            -- Local keybindings for LSP features
+            local fish_keymap_opts = { buffer = true, noremap = true, silent = true }
 
-    -- Attach client to current buffer
-    if client then
-      vim.lsp.buf_attach_client(0, client)
-      --- ┌─────────────┐
-      --- │ lsp keymaps │
-      --- └─────────────┘
-      -- Local keybindings for LSP features
-      local fish_keymap_opts = { buffer = true, noremap = true, silent = true }
+            --  inlay hint
+            vim.lsp.inlay_hint.enable(true)
 
-      --  inlay hint
-      vim.lsp.inlay_hint.enable(true)
+            -- hold color highlighting
+            vim.cmd([[
+            autocmd CursorHold  <buffer> lua vim.lsp.buf.document_highlight()
+            autocmd CursorHoldI <buffer> lua vim.lsp.buf.document_highlight()
+            autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
+            ]])
 
-      -- hold color highlighting
-      vim.cmd([[
-	autocmd CursorHold  <buffer> lua vim.lsp.buf.document_highlight()
-	autocmd CursorHoldI <buffer> lua vim.lsp.buf.document_highlight()
-	autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
-      ]])
+            --  go-to definition
+            if vim.lsp.buf.definition then
+              vim.keymap.set('n', 'gd', vim.lsp.buf.definition, fish_keymap_opts)
+            end
+            -- go-to implementation
+            if vim.lsp.buf.implementation then
+              vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, fish_keymap_opts)
+            end
+            -- hover
+            if vim.lsp.buf.hover then
+              vim.keymap.set('n', 'gs', vim.lsp.buf.hover, fish_keymap_opts)
+              vim.keymap.set('n', 'K', vim.lsp.buf.hover, fish_keymap_opts)
+              -- Make Ctrl+d and Ctrl+u scroll hover documentation if visible in normal mode
 
-      --  go-to definition
-      if vim.lsp.buf.definition then
-	vim.keymap.set('n', 'gd', vim.lsp.buf.definition, fish_keymap_opts)
-      end
-      -- go-to implementation
-      if vim.lsp.buf.implementation then
-	vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, fish_keymap_opts)
-      end
-      -- hover
-      if vim.lsp.buf.hover then
-	vim.keymap.set('n', 'gs', vim.lsp.buf.hover, fish_keymap_opts)
-	vim.keymap.set('n', 'K', vim.lsp.buf.hover, fish_keymap_opts)
-	-- Make Ctrl+d and Ctrl+u scroll hover documentation if visible in normal mode
+            end
 
-      end
-      -- go-to reference
-      if vim.lsp.buf.references then
-	vim.keymap.set("n", "gr", vim.lsp.buf.references, fish_keymap_opts)
-      end
-      -- rename
-      if vim.lsp.buf.rename then
-	vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, fish_keymap_opts)
-      end
-      -- code actions
-      if vim.lsp.buf.code_action then
-	vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, fish_keymap_opts)
-	vim.keymap.set('n', 'gca', vim.lsp.buf.code_action, fish_keymap_opts)
-      end
-      -- format
-      if vim.lsp.buf.format then
-	vim.keymap.set('n', '<leader>f', function()
-	  vim.lsp.buf.format({ async = true })
-	end, fish_keymap_opts)
-      end
-      -- signature help
-      if vim.lsp.buf.signature_help then
-	vim.keymap.set('n', '<leader>s', vim.lsp.buf.signature_help, fish_keymap_opts)
-	vim.keymap.set('i', '<C-s>', vim.lsp.buf.signature_help, fish_keymap_opts)
-      end
-      -- inspecting tree-sitter nodes
-      -- note: you might have to install the tree-sitter-fish language file for this to work
-      --       @see https://github.com/nvim-treesitter/nvim-treesitter
-      vim.keymap.set("n", "<leader>i", "<cmd>Inspect<cr>", fish_keymap_opts)
-      vim.keymap.set("n", "<leader>ii", "<cmd>InspectTree<cr>", fish_keymap_opts)
+            -- jump to diagnostic
+            vim.keymap.set('n', 'gn', vim.diagnostic.goto_next, fish_keymap_opts)
+            vim.keymap.set('n', 'gp', vim.diagnostic.goto_prev, fish_keymap_opts)
+            vim.keymap.set('n', 'gen', vim.diagnostic.goto_next, fish_keymap_opts)
+            vim.keymap.set('n', 'gep', vim.diagnostic.goto_prev, fish_keymap_opts)
 
-      if vim.lsp.buf.documentHighlight then
-	vim.keymap.set("n", "<leader>h", vim.lsp.buf.document_highlight, fish_keymap_opts)
-      end
+            -- go-to reference
+            if vim.lsp.buf.references then
+              vim.keymap.set("n", "gr", vim.lsp.buf.references, fish_keymap_opts)
+            end
+            -- rename
+            if vim.lsp.buf.rename then
+              vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, fish_keymap_opts)
+            end
+            local function quickfix()
+              vim.lsp.buf.code_action({
+                filter = function(a) return a.isPreferred end,
+                apply = true
+              })
+            end
+            -- code actions
+            if vim.lsp.buf.code_action then
+              vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, fish_keymap_opts)
+              vim.keymap.set('n', 'gca', vim.lsp.buf.code_action, fish_keymap_opts)
+              vim.keymap.set('n', '<leader>qf', quickfix, fish_keymap_opts)
+            end
 
-      -- folding
-      vim.b.foldexpr = 'v:lua.vim.lsp.foldexpr()'
-      vim.keymap.set('n', "gfo", function()
-	vim.o.foldenable = not vim.o.foldenable
-	if (vim.o.foldenable) then
-	  vim.b.foldexpr = 'v:lua.vim.lsp.foldexpr()'
-	end
-      end, fish_keymap_opts)
-    end
-  end
-})
+            -- format
+            if vim.lsp.buf.format then
+              vim.keymap.set('n', '<leader>f', function()
+                vim.lsp.buf.format({ async = true })
+              end, fish_keymap_opts)
+            end
+            -- signature help
+            if vim.lsp.buf.signature_help then
+              vim.keymap.set('n', '<leader>s', vim.lsp.buf.signature_help, fish_keymap_opts)
+              vim.keymap.set('i', '<C-s>', vim.lsp.buf.signature_help, fish_keymap_opts)
+            end
+            -- inspecting tree-sitter nodes
+            -- note: you might have to install the tree-sitter-fish language file for this to work
+            --       @see https://github.com/nvim-treesitter/nvim-treesitter
+            vim.keymap.set("n", "<leader>i", "<cmd>Inspect<cr>", fish_keymap_opts)
+            vim.keymap.set("n", "<leader>ii", "<cmd>InspectTree<cr>", fish_keymap_opts)
 
--- Optional: Set some basic fish file detection if needed
-vim.filetype.add({
-  extension = {
-    fish = 'fish',
-  },
-})
---
--- Add this to your Neovim configuration (e.g., init.lua or a plugin file)
--- ... anything else ...
-require('plugins')
-require('theme')
-require('treesitter')
-require('commands')
+            if vim.lsp.buf.documentHighlight then
+              vim.keymap.set("n", "<leader>h", vim.lsp.buf.document_highlight, fish_keymap_opts)
+            end
+
+            -- folding
+            vim.b.foldexpr = 'v:lua.vim.lsp.foldexpr()'
+            vim.keymap.set('n', "gfo", function()
+              vim.o.foldenable = not vim.o.foldenable
+              if (vim.o.foldenable) then
+                vim.b.foldexpr = 'v:lua.vim.lsp.foldexpr()'
+              end
+            end, fish_keymap_opts)
+          end
+        end
+      })
+
+      -- Optional: Set some basic fish file detection if needed
+      vim.filetype.add({
+        extension = {
+          fish = 'fish',
+        },
+      })
+      --
+      -- Add this to your Neovim configuration (e.g., init.lua or a plugin file)
+      -- ... anything else ...
+      require('plugins')
+      require('theme')
+      require('treesitter')
+      require('commands')

@@ -16,6 +16,7 @@ require('nvim-treesitter.configs').setup {
       "fish",
       "markdown",
       "markdown_inline",
+      "man",
       -- "man=markdown_inline"
       -- Add any other languages you commonly use in code blocks
     },
