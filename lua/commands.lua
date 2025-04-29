@@ -1,5 +1,17 @@
 ---@diagnostic disable: lowercase-global
 --
+function get_lsp_position()
+   local cursor_pos = vim.api.nvim_win_get_cursor(0)
+  
+  -- Convert cursor position to LSP Position (0-indexed for both line and character)
+  local position = {
+    line = cursor_pos[1] - 1,  -- Convert from 1-indexed to 0-indexed
+    character = cursor_pos[2]  -- Already 0-indexed
+  }
+  return position
+end
+  
+
 -- function show_fish_lsp_workspace()
 --   vim.lsp.buf.execute_command({
 --     command = "fish-lsp.showWorkspaceMessage",
@@ -41,6 +53,21 @@ function fish_update_config()
   vim.lsp.buf.execute_command({
     command = "fish-lsp.updateConfig",
     arguments = {buffer_path}
+  })
+end
+
+function fish_lsp_show_references()
+  local buffer_path = vim.api.nvim_buf_get_name(0)
+
+  local position = get_lsp_position()
+
+  vim.lsp.buf.execute_command({
+    command = "fish-lsp.showReferences",
+    arguments = {
+      buffer_path,
+      position,
+      {},
+    }
   })
 end
 
