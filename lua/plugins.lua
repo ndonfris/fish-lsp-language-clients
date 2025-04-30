@@ -89,6 +89,14 @@ return require("packer").startup(function(use)
     end,
   })
 
+  -- Which-key for discovering keybindings
+  use {
+    'folke/which-key.nvim',
+    config = function()
+      require('which-key').setup {}
+    end
+  }
+
   if packer_bootstrap then
     require("packer").sync()
   end
