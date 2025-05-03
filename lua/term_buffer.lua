@@ -21,16 +21,18 @@ vim.api.nvim_create_autocmd("TermOpen", {
     -- Start in insert mode
     vim.cmd("startinsert")
 
-    -- Add terminal-specific keymaps
-    vim.keymap.set("t", "<C-c>", [[<C-\><C-n><C-\><C-n>]], { buffer = true })
-    vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], { buffer = true })
-    -- Horizontal resize in terminal mode
-    vim.keymap.set('t', '<M-k>', '<C-\\><C-n>:horizontal resize +5<CR>i', {desc = "Increase terminal width"})
-    vim.keymap.set('t', '<M-j>', '<C-\\><C-n>:horizontal resize -5<CR>i', {desc = "Decrease terminal width"})
-    vim.keymap.set('t', '<M-h>', '<C-\\><C-n>:vertical resize +5<CR>i', {desc = "Increase terminal width"})
-    vim.keymap.set('t', '<M-l>', '<C-\\><C-n>:vertical resize -5<CR>i', {desc = "Decrease terminal width"})
+    if vim.g.enable_custom_keymaps then
+      -- Add terminal-specific keymaps
+      vim.keymap.set("t", "<C-c>", [[<C-\><C-n><C-\><C-n>]], { buffer = true })
+      vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], { buffer = true })
+      -- Horizontal resize in terminal mode
+      vim.keymap.set('t', '<M-k>', '<C-\\><C-n>:horizontal resize +5<CR>i', {desc = "Increase terminal width"})
+      vim.keymap.set('t', '<M-j>', '<C-\\><C-n>:horizontal resize -5<CR>i', {desc = "Decrease terminal width"})
+      vim.keymap.set('t', '<M-h>', '<C-\\><C-n>:vertical resize +5<CR>i', {desc = "Increase terminal width"})
+      vim.keymap.set('t', '<M-l>', '<C-\\><C-n>:vertical resize -5<CR>i', {desc = "Decrease terminal width"})
 
-    vim.keymap.set("n", "<C-c>", '<cmd>bd!<CR>', { buffer = true, silent = true, noremap = true, desc = "close terminal buffer", nowait = true })
+      vim.keymap.set("n", "<C-c>", '<cmd>bd!<CR>', { buffer = true, silent = true, noremap = true, desc = "close terminal buffer", nowait = true })
+    end
   end,
 })
 

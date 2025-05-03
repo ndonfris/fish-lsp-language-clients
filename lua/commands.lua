@@ -2,7 +2,7 @@
 --
 function get_lsp_position()
    local cursor_pos = vim.api.nvim_win_get_cursor(0)
-  
+
   -- Convert cursor position to LSP Position (0-indexed for both line and character)
   local position = {
     line = cursor_pos[1] - 1,  -- Convert from 1-indexed to 0-indexed
@@ -10,7 +10,7 @@ function get_lsp_position()
   }
   return position
 end
-  
+
 
 -- function show_fish_lsp_workspace()
 --   vim.lsp.buf.execute_command({
@@ -167,14 +167,16 @@ vim.api.nvim_create_user_command("FishCreateEnvVariables", fish_create_env_varia
 
 
 -- Optional: Add keymappings
-vim.keymap.set('n', '<leader>fw', fish_show_workspace_message, { desc = "Show Fish Workspace" })
-vim.keymap.set('n', '<leader>fwc', fish_update_workspace_current, { desc = "Update Fish Workspace to Current Buffer" })
-vim.keymap.set('n', '<leader>fc', fish_update_config, { desc = "Update Fish Config" })
-vim.keymap.set('n', '<leader>feb', fish_execute_buffer, { desc = "Execute Fish Buffer" })
-vim.keymap.set('n', '<leader>fel', fish_execute_line, { desc = "Execute Fish Line" })
-vim.keymap.set('n', '<leader>fct', fish_create_theme, { desc = "Create Fish Theme" })
-vim.keymap.set('n', '<leader>ff', fish_fix_all, { desc = "Fix All Fish" })
-vim.keymap.set('n', '<leader>fev', fish_create_env_variables, { desc = "Create Fish Env Variables" })
+if vim.g.enable_custom_keymaps then
+  vim.keymap.set('n', '<leader>fw', fish_show_workspace_message, { desc = "Show Fish Workspace" })
+  vim.keymap.set('n', '<leader>fwc', fish_update_workspace_current, { desc = "Update Fish Workspace to Current Buffer" })
+  vim.keymap.set('n', '<leader>fc', fish_update_config, { desc = "Update Fish Config" })
+  vim.keymap.set('n', '<leader>feb', fish_execute_buffer, { desc = "Execute Fish Buffer" })
+  vim.keymap.set('n', '<leader>fel', fish_execute_line, { desc = "Execute Fish Line" })
+  vim.keymap.set('n', '<leader>fct', fish_create_theme, { desc = "Create Fish Theme" })
+  vim.keymap.set('n', '<leader>ff', fish_fix_all, { desc = "Fix All Fish" })
+  vim.keymap.set('n', '<leader>fev', fish_create_env_variables, { desc = "Create Fish Env Variables" })
+end
 
 --
 -- Optional: Add keymapping

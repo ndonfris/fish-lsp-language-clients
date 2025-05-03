@@ -10,7 +10,9 @@
 -- ```fish                                                                                              
 -- set -agx MANPATH $__fish_data_dir/man                                                                
 -- ```                                                                                                  
-vim.keymap.set('n', 'g?', '<cmd>silent vertical Man<cr>', { noremap = true, buffer = true, silent = true, desc = "Open manpage for current word" })
+if vim.g.enable_custom_keymaps then
+  vim.keymap.set('n', 'g?', '<cmd>silent vertical Man<cr>', { noremap = true, buffer = true, silent = true, desc = "Open manpage for current word" })
+end
 
 -- vim.o.compiler = 'fish'
 

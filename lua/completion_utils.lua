@@ -11,7 +11,8 @@ function M.completion_handler()
   else
     -- Try to trigger LSP completion first
     if vim.lsp.buf.completion_list_available and vim.lsp.get_active_clients({ bufnr = 0 })[1] then
-      return vim.lsp.buf.completion()
+      -- return vim.lsp.buf.completion()
+      return vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<C-x><C-o>', true, true, true), 'n')
     else
       -- Fall back to omnifunc or regular completion
       return vim.fn.feedkeys(vim.api.nvim_replace_termcodes('<C-x><C-o>', true, true, true), 'n')

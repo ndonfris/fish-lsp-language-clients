@@ -4,6 +4,8 @@
 -- ```fish
 -- set -agx MANPATH $__fish_data_dir/man
 -- ```
-vim.keymap.set("n", "<C-c>", "<cmd>close<cr>", { noremap = true, buffer = true, silent = true, desc = "Close current manpage" })
-vim.keymap.set("n", "g?", "<cmd>Man<cr>", { noremap = true, buffer = true, silent = true, desc = "Open manpage for current word" })
+if vim.g.enable_custom_keymaps then
+  vim.keymap.set("n", "<C-c>", "<cmd>close<cr>", { noremap = true, buffer = true, silent = true, desc = "Close current manpage" })
+  vim.keymap.set("n", "g?", "<cmd>Man<cr>", { noremap = true, buffer = true, silent = true, desc = "Open manpage for current word" })
+end
 
