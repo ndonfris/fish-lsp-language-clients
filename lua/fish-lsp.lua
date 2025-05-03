@@ -37,7 +37,7 @@ local function on_attach(client, bufnr)
   setup_document_highlight(client, bufnr)
 
   -- Configure hover with rounded borders
-  vim.opt.winborder = 'rounded'
+  vim.opt.winborder = "rounded"
   vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
     border = "rounded",
     max_width = 120,
@@ -53,18 +53,18 @@ local function on_attach(client, bufnr)
     vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
   end
 
-  -- hold color highlighting                                                                     
+  -- hold color highlighting
   vim.cmd([[                                                                                     
     autocmd CursorHold  <buffer> lua vim.lsp.buf.document_highlight()                            
     autocmd CursorHoldI <buffer> lua vim.lsp.buf.document_highlight()                            
     autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()                              
-  ]])                                                                                            
+  ]])
 
-  -- codelens                                                                                    
+  -- codelens
   if vim.lsp.codelens and client.server_capabilities.codeLensProvider then
     vim.cmd([[                                                                                     
       autocmd BufEnter,CursorHold,InsertLeave <buffer> lua vim.lsp.codelens.refresh({ bufnr = 0 }) 
-    ]])                                                                                            
+    ]])
   end
 
   -- Local keybindings for LSP features
@@ -132,7 +132,24 @@ local function on_attach(client, bufnr)
       vim.b.foldexpr = "v:lua.vim.lsp.foldexpr()"
     end
   end, opts)
+
+  -- Set up workspace symbols
+  vim.keymap.set("n", "<leader><leader>W", vim.lsp.buf.workspace_symbol, {
+    noremap = true,
+    silent = true,
+    buffer = bufnr,
+    desc = "LSP: Workspace Symbol",
+  })
+
+  vim.keymap.set("n", "<leader><leader>S", vim.lsp.buf.document_symbol, {
+    noremap = true,
+    silent = true,
+    buffer = bufnr,
+    desc = "LSP: Document Symbol",
+  })
+
 end
+
 
 -- Initialize the fish LSP using v0.11.1 native LSP config
 function M.setup()
