@@ -72,7 +72,7 @@ return require("packer").startup(function(use)
           normal_cur = "yss",
           normal_line = "yS",
           normal_cur_line = "ySS",
-          visual = "S",
+          visual = "s",
           visual_line = "gS",
           delete = "ds",
           change = "cs",
@@ -90,12 +90,23 @@ return require("packer").startup(function(use)
   })
 
   -- Which-key for discovering keybindings
-  use {
+  use({
     'folke/which-key.nvim',
     config = function()
       require('which-key').setup {}
-    end
-  }
+    end,
+  })
+
+  -- Include notify
+  use({
+    'rcarriga/nvim-notify',
+    config = function()
+      require('notify').setup({
+        background_colour = "NormalFloat",
+      })
+      vim.notify = require('notify')
+    end,
+  })
 
   if packer_bootstrap then
     require("packer").sync()

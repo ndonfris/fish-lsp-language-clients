@@ -1,15 +1,8 @@
--- fix lua/config tab size
-vim.o.shiftwidth = 2
-vim.o.tabstop = 2
-vim.o.softtabstop = 2
-
-vim.b.shiftwidth = 2
 
 if vim.g.enable_custom_keymaps then
   -- Add keymaps for navigating between buffers
   vim.keymap.set("n", "gd", "K", { noremap = true, silent = true, buffer = true })
 
-  -- add autosave alias keymap
   local keymaps = require('keymaps')
   vim.keymap.set('n', '<leader>w', keymaps.source_nvim_config_file, { 
     noremap = true,
@@ -19,8 +12,3 @@ if vim.g.enable_custom_keymaps then
     buffer = true,
   })
 end
-
-vim.cmd([[
-  autocmd BufEnter,VimEnter,BufNew *.lua setlocal sw=2 
-]])
-

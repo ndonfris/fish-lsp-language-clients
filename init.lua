@@ -94,6 +94,14 @@ vim.o.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 ---
 ---
 
+vim.opt.undofile = true
+
+vim.o.termguicolors = true
+
+ -- Enable fuzzy matching in command-line completion
+vim.opt.wildoptions:append('fuzzy')
+vim.opt.wildmode = 'list:full'
+vim.opt.wildmenu = true
 
 ----
 ---- ┌────────────────────────────────┐
@@ -102,29 +110,14 @@ vim.o.foldexpr = 'v:lua.vim.treesitter.foldexpr()'
 
 --- @type boolean use the custom keymaps this config defines
 vim.g.enable_custom_keymaps = true
+vim.g.enable_tmux_keymaps = true
 
 --------------------------------------------------------------------------------
-
----- ┌────────────────┐
----- │  load plugins  │
----- └────────────────┘
-
---
--- Add this to your Neovim configuration (e.g., init.lua or a plugin file)
--- ... anything else ...
-require('keymaps')
-require('plugins')
-require('theme')
-require('treesitter')
-require('commands')
-require('buffer_line')
 
 ---- ┌──────────────────┐
 ---- │ style hover docs │
 ---- └──────────────────┘
 -- Enable concealing of markdown characters
-
--- Set conceal specifically for markdown files
 vim.api.nvim_create_autocmd("FileType", {
   pattern = "markdown",
   callback = function()
@@ -132,8 +125,6 @@ vim.api.nvim_create_autocmd("FileType", {
   end
 })
 
-
-  -- Configure LSP hover documentation with markdown concealing
 -- Optional: Set some basic fish file detection if needed
 vim.filetype.add({
   extension = {
@@ -141,6 +132,26 @@ vim.filetype.add({
   },
 })
 
+
+--------------------------------------------------------------------------------
+
+---- ┌────────────────┐
+---- │  load plugins  │
+---- └────────────────┘
+
+-- Add this to your Neovim configuration (e.g., init.lua or a plugin file)
+require('plugins')
+require('keymaps')
+require('theme')
+require('treesitter')
+require('commands')
+
+
+-- load custom modules
+require('bufferline').setup()
 require('fish-lsp').setup()
+require('fuzzy').setup()
+require('tmux').setup()
+-- ... anything else ...
 
 

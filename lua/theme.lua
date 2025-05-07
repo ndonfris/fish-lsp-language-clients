@@ -12,5 +12,5 @@ vim.cmd[[
   hi! NormalFloat ctermbg=235 guifg=#8be9fd guibg=#21222c
   hi! FloatBorder ctermbg=235 guifg=#8be9fd guibg=#21222c 
 
-  "hi! link RenderMarkdownCode NormalFloat
+  hi! link NotifyBackground NormalFloat
 ]]

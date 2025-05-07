@@ -1,5 +1,46 @@
+---@diagnostic disable: lowercase-global
 -- fish-lsp.lua configuration
 local M = {}
+
+-- Check if nvim version meets requirement (0.11.1)
+function M.check_version(required_major, required_minor, required_patch)
+  -- Set defaults if not provided
+  required_major = required_major or 0
+  required_minor = required_minor or 11
+  required_patch = required_patch or 1
+
+  local v = vim.version()
+  local meets_requirement = false
+
+  if v.major > required_major then
+    meets_requirement = true
+  elseif v.major == required_major and v.minor > required_minor then
+    meets_requirement = true
+  elseif v.major == required_major and v.minor == required_minor and v.patch >= required_patch then
+    meets_requirement = true
+  end
+
+  return {
+    meets_requirement = meets_requirement,
+    current = v,
+    required = { major = required_major, minor = required_minor, patch = required_patch },
+  }
+end
+
+function check_nvim_version()
+  local result = M.check_version()
+  local v = result.current
+
+  if not result.meets_requirement then
+    vim.notify(
+      string.format("Warning: Current Neovim v%d.%d.%d doesn't meet the required v0.11.1", v.major, v.minor, v.patch),
+      vim.log.levels.WARN,
+      {
+        title = " Neovim version check",
+      }
+    )
+  end
+end
 
 -- Function to set up document highlight
 local function setup_document_highlight(client, bufnr)
@@ -33,14 +74,20 @@ end
 
 -- Function to configure LSP on attach
 local function on_attach(client, bufnr)
+  -- make sure we are using v0.11.1 of neovim
+  check_nvim_version()
+
   -- Set up document highlight
   setup_document_highlight(client, bufnr)
 
   -- Configure hover with rounded borders
+  --- @diagnostic disable-next-line
   vim.opt.winborder = "rounded"
   vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, {
     border = "rounded",
     max_width = 120,
+    wrap_at = 120,
+    -- trim_empty_lines = true,
   })
 
   -- Configure signature help with rounded borders
@@ -89,6 +136,15 @@ local function on_attach(client, bufnr)
   vim.keymap.set("n", "gen", vim.diagnostic.goto_next, opts)
   vim.keymap.set("n", "gep", vim.diagnostic.goto_prev, opts)
 
+  -- Navigate to next/prev diagnostic of specific severity
+  vim.keymap.set("n", "<leader>de", function()
+    vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.ERROR })
+  end, opts)
+
+  vim.keymap.set("n", "<leader>dw", function()
+    vim.diagnostic.goto_next({ severity = vim.diagnostic.severity.WARN })
+  end, opts)
+
   -- Go-to reference
   vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
 
@@ -110,6 +166,26 @@ local function on_attach(client, bufnr)
   vim.keymap.set("n", "gca", vim.lsp.buf.code_action, opts)
   vim.keymap.set("n", "<leader>qf", quickfix, opts)
 
+  -- refactors
+  vim.keymap.set("n", "<leader>cr", function()
+    vim.lsp.buf.code_action({
+      context = {
+        only = { "refactor" },
+      },
+    })
+  end, opts) -- Normal mode
+  vim.keymap.set("v", "<leader>cr", function() -- Visual mode
+    vim.lsp.buf.code_action({
+      context = {
+        only = { "refactor" },
+      },
+      range = {
+        ["start"] = vim.api.nvim_buf_get_mark(0, "<"),
+        ["end"] = vim.api.nvim_buf_get_mark(0, ">"),
+      },
+    })
+  end, opts)
+
   -- Format
   vim.keymap.set("n", "<leader>f", function()
     vim.lsp.buf.format({ async = true })
@@ -129,6 +205,7 @@ local function on_attach(client, bufnr)
   vim.keymap.set("n", "gfo", function()
     vim.o.foldenable = not vim.o.foldenable
     if vim.o.foldenable then
+      --- @diagnostic disable-next-line: inject-field
       vim.b.foldexpr = "v:lua.vim.lsp.foldexpr()"
     end
   end, opts)
@@ -148,8 +225,13 @@ local function on_attach(client, bufnr)
     desc = "LSP: Document Symbol",
   })
 
+  vim.keymap.set("n", "<leader>so", require('client_tree').document_symbols_outline, {
+    noremap = true,
+    silent = true,
+    buffer = bufnr,
+    desc = "Toggle showing document symbol tree",
+  })
 end
-
 
 -- Initialize the fish LSP using v0.11.1 native LSP config
 function M.setup()

@@ -1,11 +1,28 @@
 <!-- markdownlint-disable-file -->
 # fish-lsp-language-clients
 
-This should allow you to test the language server by creating a standalone [`neovim`](https://neovim.io/) configuration, as long as you have a `nvim` version >= 0.8.0. 
+This should allow you to test the language server by creating a standalone [`neovim`](https://neovim.io/) configuration.
+
+This config expects __neovim version__ `0.11.1` or later. Older versions of neovim, do not have the same API as this version, and therefore will not work with configuration provided here.
+
+If you are not currently using a neovim version that is compatible with the requirements listed, you can install a neovim version manager (see [bob-nvim](https://github.com/MordechaiHadad/bob)) and still use this configuration to test the language server.
+
+<!-- ```bash -->
 
 ![](./packer-nvim.png)
 
-It uses [packer.nvim](https://github.com/wbthomason/packer.nvim) with some [plug-ins](./lua/plugins.lua) to help provide QOL features for interacting with the [fish-lsp](https://github.com/ndonfris/fish-lsp). The current configuration is only using a couple of plug-ins, and tries to take advantage of using the native-lsp api. 
+
+## About
+
+This config uses [packer.nvim](https://github.com/wbthomason/packer.nvim) with a couple of [plug-ins](./lua/plugins.lua) to help provide QOL features for interacting with the [fish-lsp](https://github.com/ndonfris/fish-lsp). The current configuration is only using a couple of plug-ins, and tries to take advantage of using the native-lsp API. 
+
+It generally tries to achieve language client features by directly implementing them in lua. This barebones approach has proven to be helpful for confirming cross-platform compatibility, as features here are generally expected to be compatible with other language-clients.
+
+> Other text-editors, like VSCode, often have many different ways to interact with a language server. 
+>
+> In short, different text-editors __might__ send different requests to the language server for the same feature, causing incompatibility (i.e., VSCode's language-client trims whitespace before sending a request to the language-server & neovim's native-lsp does not). 
+>
+> By using the basic client support, seen here, detecting edge cases is significantly more straightforward.
 
 ## Usage
 
@@ -20,6 +37,10 @@ If you want to continue using this branch to test the language server, see the _
 <!-- NVIM_APPNAME=fish-lsp-language-clients nvim ~/.config/fish/config.fish -->
 ```fish
 alias flc-conf="NVIM_APPNAME=fish-lsp-language-clients nvim ~/.config/fish/config.fish"
+
+# or
+
+alias flc="NVIM_APPNAME=fish-lsp-language-clients nvim"
 ```
 
 #### Custom Usage
@@ -45,6 +66,7 @@ echo '__check_lsp_dir' >> $__fish_config_dir/conf.d/__check_lsp_dir.fish
 | Keymap | Mode | Description |
 |--------|-------------|-------------|
 | `C-space` | insert  | Trigger completion |
+| `<Tab>` | normal | Trigger/move through completions |
 | `C-j` | insert  | move down completion menu |
 | `C-k` | insert  | move up completion menu |
 | `C-d` | insert  | scroll down completion menu |
@@ -71,5 +93,20 @@ echo '__check_lsp_dir' >> $__fish_config_dir/conf.d/__check_lsp_dir.fish
 | `<leader>gc` | normal | toggle comment |
 | `g?` | normal | show man page for word under cursor |
 | `gfo` | normal | enable folds for buffer |
+| `<leader>so` | normal | toggle client symbol outline |
+| `<leader>ff` | normal | find files |
+| `<C-space>` | normal | find files |
+| `<leader>fb` | normal | find buffers |
 
 </div>
+
+## Customization
+
+While this config was written primarily to avoid having to customize a neovim
+configuration, it does ship some customization options.
+
+| Option | Description | Default | 
+| ------ | ----------- | ------- | 
+| `vim.g.enable_custom_keymaps` | enable all of the keymaps shipped with the config | `true` |
+| `vim.g.enable_tmux_keymaps` | enable keymaps for tmux | `true` |
+

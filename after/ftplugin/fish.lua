@@ -18,6 +18,3 @@ end
 
 vim.b.current_compiler = 'fish'
 
--- vim.cmd([[
---   autocmd BufEnter *.fish  fish
--- ]])

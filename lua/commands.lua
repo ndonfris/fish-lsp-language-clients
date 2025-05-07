@@ -11,25 +11,6 @@ function get_lsp_position()
   return position
 end
 
-
--- function show_fish_lsp_workspace()
---   vim.lsp.buf.execute_command({
---     command = "fish-lsp.showWorkspaceMessage",
---     arguments = {}
---   })
--- end
---
--- -- Optional: Map it to a key
--- vim.keymap.set('n', '<leader>fw', show_fish_lsp_workspace, { desc = "Show Fish Workspace" })
---
--- function update_fish_lsp_workspace()
---   vim.lsp.buf.execute_command({
---     command = "fish-lsp.updateWorkspace",
---     arguments = {
---       vim.fn.expand('%:p:h'),
---     }
---   })
--- end
 -- Function to execute the showWorkspaceMessage command
 function fish_show_workspace_message()
   vim.lsp.buf.execute_command({
@@ -178,5 +159,3 @@ if vim.g.enable_custom_keymaps then
   vim.keymap.set('n', '<leader>fev', fish_create_env_variables, { desc = "Create Fish Env Variables" })
 end
 
---
--- Optional: Add keymapping

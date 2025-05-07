@@ -1,3 +1,4 @@
+---@diagnostic disable: missing-parameter
 ---- ┌─────────┐
 ---- │ keymaps │
 ---- └─────────┘
@@ -6,16 +7,18 @@ local M = {}
 local global_keymap_opts = { noremap = true, silent = true }
 local control_opts = { noremap = true, silent = true, expr = true }
 
+--- early return if custom keymaps are disabled
 if vim.g.enable_custom_keymaps == nil then
   vim.g.enable_custom_keymaps = true
 end
-
 if vim.g.enable_custom_keymaps == false then
   return
 end
 
-vim.keymap.set("n", "<Space>", "", global_keymap_opts)
+--- begin using custom keymaps
 
+--- leader key
+vim.keymap.set("n", "<Space>", "", global_keymap_opts)
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
@@ -101,6 +104,7 @@ vim.keymap.set("v", "M", "%", global_keymap_opts)
 vim.keymap.set("n", "qq", "<cmd>qa!<cr>", global_keymap_opts)
 
 -- C-d and C-u scroll in floating windows
+
 vim.keymap.set("n", "<C-d>", function()
   require("hover_scroll").scroll_hover("<C-f>", "<C-d>")
 end, { noremap = true, silent = true })
@@ -137,5 +141,60 @@ vim.keymap.set("i", "<C-BS>", "<C-w>", completion_opts)
 
 -- commenting
 vim.keymap.set({ "n", "x", "o" }, "<Leader>c", "gc", { remap = true })
+
+-- Function to handle smart opening of netrw
+function M.smart_netrw(path)
+  -- Find all windows with netrw buffers
+  local netrw_windows = {}
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    local buf = vim.api.nvim_win_get_buf(win)
+    if vim.bo[buf].filetype == "netrw" then
+      table.insert(netrw_windows, win)
+    end
+  end
+
+  -- Close all netrw windows
+  for _, win in ipairs(netrw_windows) do
+    vim.api.nvim_win_close(win, false)
+  end
+
+  -- Find and delete any remaining netrw buffers
+  for _, buf in ipairs(vim.api.nvim_list_bufs()) do
+    if vim.bo[buf].filetype == "netrw" then
+      -- Try to delete the buffer, but don't force it if modified
+      pcall(function()
+        vim.api.nvim_buf_delete(buf, { force = false })
+      end)
+    end
+  end
+
+  -- Now open netrw with the specified path
+  vim.defer_fn(function()
+    if path then
+      vim.cmd("Lexplore " .. path)
+    else
+      vim.cmd("Lexplore")
+    end
+  end, 10) -- Small delay to ensure previous operations are complete
+end
+
+-- vim.keymap.set('n', '<Leader><C-d>', '<cmd>Lexplore %:p:h<CR>', {noremap = true, silent = true, nowait = true, desc = 'open netrw in directory of current file' })
+-- vim.keymap.set('n', '<leader><leader><C-d>', '<cmd>Lexplore<CR>', {noremap = true, silent = true, nowait = true, desc = 'open netrw in current working directory' })
+vim.keymap.set("n", "<Leader><C-d>", function()
+  M.smart_netrw(vim.fn.expand("%:p:h"))
+end, { noremap = true, silent = true, nowait = true, desc = "open single netrw in directory of current file" })
+
+
+--- helper to source nvim config files
+M.source_nvim_config_file = function()
+  vim.cmd(':silent update | w | so %')
+  vim.notify(
+    'write and source file:\n' .. vim.fn.expand('%:p')..'/'..vim.fn.expand('%:t'),
+    vim.log.levels.INFO,
+    {
+      title = ' `:w | so %` - ('.. vim.fn.expand('%:t') ..')',
+    }
+  )
+end
 
 return M
