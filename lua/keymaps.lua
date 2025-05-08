@@ -5,14 +5,14 @@
 local M = {}
 
 local global_keymap_opts = { noremap = true, silent = true }
-local control_opts = { noremap = true, silent = true, expr = true }
+-- local control_opts = { noremap = true, silent = true, expr = true }
 
 --- early return if custom keymaps are disabled
 if vim.g.enable_custom_keymaps == nil then
   vim.g.enable_custom_keymaps = true
 end
 if vim.g.enable_custom_keymaps == false then
-  return
+  return M
 end
 
 --- begin using custom keymaps
@@ -23,9 +23,16 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 -- command mode keymaps
-vim.keymap.set("c", "<C-a>", "<C-b>", control_opts) -- ctrl-a moves to the beginning of the line
-vim.keymap.set("c", "<C-y>", "<C-f>", control_opts) -- ctrl-y opens command history
-vim.keymap.set("c", "<C-v>", "<C-r>+", control_opts) -- ctrl-y opens command history
+vim.keymap.set("c", "<C-a>", "<C-b>", { noremap = true })  -- ctrl-a moves to the beginning of the line
+vim.keymap.set("c", "<C-y>", "<C-f>", { noremap = true })  -- ctrl-y opens command history
+vim.keymap.set("c", "<C-v>", "<C-r>+", { noremap = true }) -- ctrl-y opens command history
+-- Map <C-Space> to the default wildchar (usually <Tab>)
+vim.keymap.set('c', '<C-Space>', function()
+    return vim.api.nvim_replace_termcodes('<C-Z>', true, false, true)
+end, { expr = true})
+vim.keymap.set('c', '<C-j>', '<C-n>', { noremap = true })
+vim.keymap.set('c', '<C-k>', '<C-p>', { noremap = true })
+vim.cmd([[set wildmode=longest,full]])
 
 -- map <C-c> to <esc>
 vim.cmd([[
@@ -34,7 +41,7 @@ vim.cmd([[
   xnoremap <C-c> <esc>
   inoremap <C-c> <esc>
   vnoremap <C-c> <esc>
-  cnoremap <C-c> <esc>
+  "cnoremap <C-c> <Esc>
 ]])
 
 -- window movement
@@ -104,17 +111,16 @@ vim.keymap.set("v", "M", "%", global_keymap_opts)
 vim.keymap.set("n", "qq", "<cmd>qa!<cr>", global_keymap_opts)
 
 -- C-d and C-u scroll in floating windows
+local hover_scroll = require("hover_scroll")
+vim.keymap.set("n", "<C-d>", function() hover_scroll.scroll_hover("<C-f>", "<C-d>") end,
+  { noremap = true, silent = true })
+vim.keymap.set("n", "<C-u>", function() hover_scroll.scroll_hover("<C-b>", "<C-u>") end,
+  { noremap = true, silent = true })
 
-vim.keymap.set("n", "<C-d>", function()
-  require("hover_scroll").scroll_hover("<C-f>", "<C-d>")
-end, { noremap = true, silent = true })
-vim.keymap.set("n", "<C-u>", function()
-  require("hover_scroll").scroll_hover("<C-b>", "<C-u>")
-end, { noremap = true, silent = true })
-
-local completion_utils = require("completion_utils")
-local completion_opts = require("completion_utils").default_opts
-local completion_expr_opts = require("completion_utils").expr_opts
+-- Completion utils
+local completion_utils = require("lsps.completion_utils")
+local completion_opts = completion_utils.default_opts
+local completion_expr_opts = completion_utils.expr_opts
 
 -- -- Map Ctrl+Space to trigger completion in insert mode
 vim.keymap.set("i", "<C-Space>", completion_utils.completion_handler, completion_expr_opts)
@@ -140,7 +146,7 @@ vim.keymap.set("i", "<C-h>", "<C-w>", completion_opts)
 vim.keymap.set("i", "<C-BS>", "<C-w>", completion_opts)
 
 -- commenting
-vim.keymap.set({ "n", "x", "o" }, "<Leader>c", "gc", { remap = true })
+vim.keymap.set({'n', 'x', 'o'}, '<leader>cc', '<cmd>silent call feedkeys("gcc", "t")<cr>', { silent = true, noremap = true, desc = 'toggle a comment' })
 
 -- Function to handle smart opening of netrw
 function M.smart_netrw(path)
@@ -189,10 +195,10 @@ end, { noremap = true, silent = true, nowait = true, desc = "open single netrw i
 M.source_nvim_config_file = function()
   vim.cmd(':silent update | w | so %')
   vim.notify(
-    'write and source file:\n' .. vim.fn.expand('%:p')..'/'..vim.fn.expand('%:t'),
+    'write and source file:\n' .. vim.fn.expand('%:p') .. '/' .. vim.fn.expand('%:t'),
     vim.log.levels.INFO,
     {
-      title = ' `:w | so %` - ('.. vim.fn.expand('%:t') ..')',
+      title = ' `:w | so %` - (' .. vim.fn.expand('%:t') .. ')',
     }
   )
 end
