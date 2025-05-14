@@ -28,8 +28,8 @@ vim.keymap.set("c", "<C-y>", "<C-f>", { noremap = true })  -- ctrl-y opens comma
 vim.keymap.set("c", "<C-v>", "<C-r>+", { noremap = true }) -- ctrl-y opens command history
 -- Map <C-Space> to the default wildchar (usually <Tab>)
 vim.keymap.set('c', '<C-Space>', function()
-    return vim.api.nvim_replace_termcodes('<C-Z>', true, false, true)
-end, { expr = true})
+  return vim.api.nvim_replace_termcodes('<C-Z>', true, false, true)
+end, { expr = true })
 vim.keymap.set('c', '<C-j>', '<C-n>', { noremap = true })
 vim.keymap.set('c', '<C-k>', '<C-p>', { noremap = true })
 vim.cmd([[set wildmode=longest,full]])
@@ -69,15 +69,19 @@ vim.keymap.set("n", "<leader><leader>ef", "<cmd>edit ~/.config/fish/config.fish<
 vim.keymap.set("n", "<leader><leader>en", "<cmd>edit ~/.config/fish-lsp-language-clients<cr>", { silent = true })
 
 -- split buffer keymaps
-vim.keymap.set("n", "<leader>|", "<cmd>vsplit<cr>", global_keymap_opts)
-vim.keymap.set("n", "<leader>_", "<cmd>split<cr>", global_keymap_opts)
+vim.keymap.set("n", "<leader>|", "<cmd>vsplit<cr>", { noremap = true, silent = true, desc = "vsplit buffer" })
+vim.keymap.set("n", "<leader>_", "<cmd>split<cr>", { noremap = true, silent = true, desc = "split buffer" })
+vim.keymap.set("n", "<leader><C-s>", "<cmd>vsplit<cr>", { noremap = true, silent = true, desc = "vsplit buffer" })
+vim.keymap.set("n", "<leader><C-v>", "<cmd>split<cr>", { noremap = true, silent = true, desc = "split buffer" })
 
 -- delete buffer
-vim.keymap.set("n", "<leader>db", "<cmd>bdelete!<cr>", global_keymap_opts)
+vim.keymap.set("n", "<leader>db", "<cmd>bdelete!<cr>", { noremap = true, silent = true, desc = "delete buffer" })
 
 -- buffer movement
-vim.keymap.set("n", "<C-n>", "<cmd>bn<cr>", { noremap = true })
-vim.keymap.set("n", "<C-p>", "<cmd>bp<cr>", { noremap = true })
+vim.keymap.set("n", "<C-n>", "<cmd>lua require('bufferline').next_buffer()<cr>",
+  { noremap = true, desc = "move to next buffer" })
+vim.keymap.set("n", "<C-p>", "<cmd>lua require('bufferline').prev_buffer()<cr>",
+  { noremap = true, desc = "move to prev buffer" })
 
 -- Close quickfix windows with <C-c>
 vim.api.nvim_create_autocmd("FileType", {
@@ -111,11 +115,17 @@ vim.keymap.set("n", "qq", "<cmd>qa!<cr>", global_keymap_opts)
 
 -- C-d and C-u scroll in floating windows
 local hover_scroll = require("lsps.utils.hover")
-vim.keymap.set("n", "<C-d>", function() hover_scroll.scroll_hover("<C-f>", "<C-d>") end, { noremap = true, silent = true })
-vim.keymap.set("n", "<C-u>", function() hover_scroll.scroll_hover("<C-b>", "<C-u>") end, { noremap = true, silent = true })
+
+vim.keymap.set("n", "<C-d>", function()
+  hover_scroll.scroll_hover("<C-f>", "<C-d>")
+end, { noremap = true, silent = true })
+
+vim.keymap.set("n", "<C-u>", function()
+  hover_scroll.scroll_hover("<C-b>", "<C-u>")
+end, { noremap = true, silent = true })
 
 -- Completion utils
-local completion_utils = require("lua.lsps.utils.completions")
+local completion_utils = require("lsps.utils.completions")
 local completion_opts = completion_utils.default_opts
 local completion_expr_opts = completion_utils.expr_opts
 
@@ -143,7 +153,8 @@ vim.keymap.set("i", "<C-h>", "<C-w>", completion_opts)
 vim.keymap.set("i", "<C-BS>", "<C-w>", completion_opts)
 
 -- commenting
-vim.keymap.set({'n', 'x', 'o'}, '<leader>cc', '<cmd>silent call feedkeys("gcc", "t")<cr>', { silent = true, noremap = true, desc = 'toggle a comment' })
+vim.keymap.set({ 'n', 'x', 'o' }, '<leader>cc', '<cmd>silent call feedkeys("gcc", "t")<cr>',
+  { silent = true, noremap = true, desc = 'toggle a comment' })
 
 -- Function to handle smart opening of netrw
 function M.smart_netrw(path)
@@ -183,13 +194,21 @@ end
 
 -- vim.keymap.set('n', '<Leader><C-d>', '<cmd>Lexplore %:p:h<CR>', {noremap = true, silent = true, nowait = true, desc = 'open netrw in directory of current file' })
 -- vim.keymap.set('n', '<leader><leader><C-d>', '<cmd>Lexplore<CR>', {noremap = true, silent = true, nowait = true, desc = 'open netrw in current working directory' })
-vim.keymap.set("n", "<Leader><C-d>", function() M.smart_netrw(vim.fn.expand("%:p:h")) end, { noremap = true, silent = true, nowait = true, desc = "open single netrw in directory of current file" })
+vim.keymap.set("n", "<Leader><C-d>", function()
+  M.smart_netrw(vim.fn.expand("%:p:h"))
+end, { noremap = true, silent = true, nowait = true, desc = "open single netrw in directory of current file" })
 
 
 --- helper to source nvim config files
 M.source_nvim_config_file = function()
   vim.cmd(':silent update | w | so %')
-  vim.notify('write and source file:\n' .. vim.fn.expand('%:p') .. '/' .. vim.fn.expand('%:t'), vim.log.levels.INFO, { title = ' `:w | so %` - (' .. vim.fn.expand('%:t') .. ')', })
+  vim.notify('write and source file:\n' .. vim.fn.expand('%:p') .. '/' .. vim.fn.expand('%:t'), vim.log.levels.INFO,
+    { title = ' `:w | so %` - (' .. vim.fn.expand('%:t') .. ')', })
 end
+
+-- show which key
+vim.keymap.set('n', '<leader>?', function()
+  require('which-key').show({ global = true })
+end, { noremap = true, desc = "show global which-key keymaps", silent = true })
 
 return M

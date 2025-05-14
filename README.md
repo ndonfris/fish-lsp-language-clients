@@ -95,6 +95,7 @@ echo '__check_lsp_dir' >> $__fish_config_dir/conf.d/__check_lsp_dir.fish
 
 | Keymap | Mode | Description |
 |--------|-------------|-------------|
+| `<leader>?` | normal | show which-key |
 | `C-space` | insert  | Trigger completion |
 | `<Tab>` | normal | Trigger/move through completions |
 | `C-j` | insert  | move down completion menu |
@@ -112,6 +113,8 @@ echo '__check_lsp_dir' >> $__fish_config_dir/conf.d/__check_lsp_dir.fish
 | `<leader>f` | normal  | format document |
 | `<leader>ca` | normal  | code action |
 | `gca` | normal  | code action |
+| `<leader>W` | normal | search workspace symbols |
+| `<leader>D` | normal | search document symbols |
 | `<C-s>` | insert | show signature help |
 | `<leader>e` | normal | show diagnostics |
 | `gen` | normal | go to next diagnostic error |
@@ -127,8 +130,11 @@ echo '__check_lsp_dir' >> $__fish_config_dir/conf.d/__check_lsp_dir.fish
 | `<leader>ff` | normal | find files |
 | `<C-space>` | normal | find files |
 | `<leader>fb` | normal | find buffers |
-| `<leader>W` | normal | search workspace symbols |
-| `<leader>D` | normal | search document symbols |
+| `<leader>db` | normal | delete buffer |
+| `<leader>bn` | normal | next buffer |
+| `<leader>bp` | normal | previous buffer |
+| `<leader>1..9` | normal | jump to buffer 1-9 |
+
 
 </div>
 
