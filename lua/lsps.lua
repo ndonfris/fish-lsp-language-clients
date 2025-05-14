@@ -1,4 +1,4 @@
--- lua/lsps/init.lua
+-- lua/lsps.lua
 local M = {}
 
 -- Import the on_attach utility functions
@@ -27,6 +27,9 @@ function M.setup(opts)
 
   -- First check if Neovim version meets requirements
   utils.check_nvim_version()
+
+  -- style hover docs, by adding concealment and making sure the fish filetype is recognized
+  require('lsps.utils.hover_docs')
 
   -- Determine which servers to enable
   local servers_to_enable = vim.deepcopy(core_servers)

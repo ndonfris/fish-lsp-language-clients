@@ -41,7 +41,6 @@ vim.cmd([[
   xnoremap <C-c> <esc>
   inoremap <C-c> <esc>
   vnoremap <C-c> <esc>
-  "cnoremap <C-c> <Esc>
 ]])
 
 -- window movement

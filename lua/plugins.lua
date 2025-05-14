@@ -29,12 +29,41 @@ return require("packer").startup(function(use)
     end,
   })
 
-  -- You can alias plugin names
+  -- theme plugins with aliases
   use({ "dracula/vim", as = "dracula" })
   use({ "folke/tokyonight.nvim", as = "tokyonight" })
 
-  -- Post-install/update hook with neovim command
-  use({ "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" })
+  -- nvim-treesitter config w/ post-install/update hook with neovim command
+  use({
+    "nvim-treesitter/nvim-treesitter",
+    run = ":TSUpdate",
+    config = function()
+      require('nvim-treesitter.configs').setup {
+        ensure_installed = { "markdown", "markdown_inline", "fish" },
+        highlight = {
+          enable = true,
+        },
+        conceal = {
+          enable = true,
+
+          -- Enable concealing for markdown
+          markdown_fenced_languages = {
+            "ts=typescript",
+            "js=javascript",
+            "python",
+            "lua",
+            "typescript",
+            "fish",
+            "markdown",
+            "markdown_inline",
+            "man",
+            -- "man=markdown_inline"
+            -- Add any other languages you commonly use in code blocks
+          },
+        }
+      }
+    end,
+  })
 
   -- conceal markdown in hover docs
   use({
@@ -60,6 +89,7 @@ return require("packer").startup(function(use)
     end,
   })
 
+  -- surround keymappings
   use({
     "kylechui/nvim-surround",
     tag = "*",
