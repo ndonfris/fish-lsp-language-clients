@@ -110,14 +110,12 @@ vim.keymap.set("v", "M", "%", global_keymap_opts)
 vim.keymap.set("n", "qq", "<cmd>qa!<cr>", global_keymap_opts)
 
 -- C-d and C-u scroll in floating windows
-local hover_scroll = require("lsps.utils.hover_scroll")
-vim.keymap.set("n", "<C-d>", function() hover_scroll.scroll_hover("<C-f>", "<C-d>") end,
-  { noremap = true, silent = true })
-vim.keymap.set("n", "<C-u>", function() hover_scroll.scroll_hover("<C-b>", "<C-u>") end,
-  { noremap = true, silent = true })
+local hover_scroll = require("lsps.utils.hover")
+vim.keymap.set("n", "<C-d>", function() hover_scroll.scroll_hover("<C-f>", "<C-d>") end, { noremap = true, silent = true })
+vim.keymap.set("n", "<C-u>", function() hover_scroll.scroll_hover("<C-b>", "<C-u>") end, { noremap = true, silent = true })
 
 -- Completion utils
-local completion_utils = require("lsps.utils.completion_utils")
+local completion_utils = require("lua.lsps.utils.completions")
 local completion_opts = completion_utils.default_opts
 local completion_expr_opts = completion_utils.expr_opts
 
@@ -185,21 +183,13 @@ end
 
 -- vim.keymap.set('n', '<Leader><C-d>', '<cmd>Lexplore %:p:h<CR>', {noremap = true, silent = true, nowait = true, desc = 'open netrw in directory of current file' })
 -- vim.keymap.set('n', '<leader><leader><C-d>', '<cmd>Lexplore<CR>', {noremap = true, silent = true, nowait = true, desc = 'open netrw in current working directory' })
-vim.keymap.set("n", "<Leader><C-d>", function()
-  M.smart_netrw(vim.fn.expand("%:p:h"))
-end, { noremap = true, silent = true, nowait = true, desc = "open single netrw in directory of current file" })
+vim.keymap.set("n", "<Leader><C-d>", function() M.smart_netrw(vim.fn.expand("%:p:h")) end, { noremap = true, silent = true, nowait = true, desc = "open single netrw in directory of current file" })
 
 
 --- helper to source nvim config files
 M.source_nvim_config_file = function()
   vim.cmd(':silent update | w | so %')
-  vim.notify(
-    'write and source file:\n' .. vim.fn.expand('%:p') .. '/' .. vim.fn.expand('%:t'),
-    vim.log.levels.INFO,
-    {
-      title = ' `:w | so %` - (' .. vim.fn.expand('%:t') .. ')',
-    }
-  )
+  vim.notify('write and source file:\n' .. vim.fn.expand('%:p') .. '/' .. vim.fn.expand('%:t'), vim.log.levels.INFO, { title = ' `:w | so %` - (' .. vim.fn.expand('%:t') .. ')', })
 end
 
 return M

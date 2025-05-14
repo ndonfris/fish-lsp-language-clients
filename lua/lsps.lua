@@ -26,10 +26,10 @@ function M.setup(opts)
   opts.setup_other_lsps = opts.setup_other_lsps ~= false -- Default to true if not specified
 
   -- First check if Neovim version meets requirements
-  utils.check_nvim_version()
+  require('lsps.utils.check_health').check_nvim_version()
 
   -- style hover docs, by adding concealment and making sure the fish filetype is recognized
-  require('lsps.utils.hover_docs')
+  require('lsps.utils.hover').setup()
 
   -- Determine which servers to enable
   local servers_to_enable = vim.deepcopy(core_servers)

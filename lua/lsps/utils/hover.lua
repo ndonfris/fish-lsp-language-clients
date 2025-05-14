@@ -38,5 +38,25 @@ function M.scroll_hover(scroll_cmd, default_cmd)
   end
 end
 
+--- ┌──────────────────┐
+--- │ style hover docs │
+--- └──────────────────┘
+function M.setup()
+  -- Enable concealing of markdown characters
+  vim.api.nvim_create_autocmd("FileType", {
+    pattern = "markdown",
+    callback = function()
+      vim.o.conceallevel = 3
+    end,
+  })
+
+  -- Optional: Set some basic fish file detection if needed
+  vim.filetype.add({
+    extension = {
+      fish = "fish",
+    },
+  })
+end
+
 -- Return the module for reuse
 return M

@@ -22,7 +22,7 @@ end
 -- Store window ID in module scope for toggling
 local symbols_outline_win_id = nil
 
-function M.document_symbols_outline()
+function M.toggle()
   -- Close window if already open (toggle functionality)
   if symbols_outline_win_id and vim.api.nvim_win_is_valid(symbols_outline_win_id) then
     vim.api.nvim_win_close(symbols_outline_win_id, true)

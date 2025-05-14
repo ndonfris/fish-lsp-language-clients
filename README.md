@@ -7,8 +7,6 @@ This config expects __neovim version__ `0.11.1` or later. Older versions of neov
 
 If you are not currently using a neovim version that is compatible with the requirements listed, you can install a neovim version manager (see [bob-nvim](https://github.com/MordechaiHadad/bob)) and still use this configuration to test the language server.
 
-<!-- ```bash -->
-
 ![](./packer-nvim.png)
 
 
@@ -23,6 +21,38 @@ It generally tries to achieve language client features by directly implementing 
 > In short, different text-editors __might__ send different requests to the language server for the same feature, causing incompatibility (i.e., VSCode's language-client trims whitespace before sending a request to the language-server & neovim's native-lsp does not). 
 >
 > By using the basic client support, seen here, detecting edge cases is significantly more straightforward.
+
+
+## Requirements
+
+- [neovim](https://neovim.io/) version `0.11.1` or later
+- [fish-lsp](https://fish-lsp.dev/)
+- [fish](https://fishshell.com/)
+
+## Installation
+
+1. Clone this repository to your local machine in the directory ~/.config/fish-lsp-language-clients
+
+    ```bash
+    git clone https://github.com/ndonfris/fish-lsp-language-clients.git ~/.config/fish-lsp-language-clients
+    cd ~/.config/fish-lsp-language-clients
+    ```
+
+2. Switch to this branch
+
+    ```bash
+    git switch packer
+    ```
+
+3. Use this configuration for neovim
+
+    ```bash
+    NVIM_APPNAME=fish-lsp-language-clients nvim
+    # NVIM_APPNAME=fish-lsp-language-clients nvim ~/.config/fish/config.fish
+    ```
+
+4. Optionally, see the [usage](#usage) section for more information on how to use this configuration.
+
 
 ## Usage
 
@@ -90,7 +120,7 @@ echo '__check_lsp_dir' >> $__fish_config_dir/conf.d/__check_lsp_dir.fish
 | `<leader>i` | normal | show tree-sitter tree |
 | `<leader><C-t>` | normal | open terminal buffer |
 | `<leader><C-b>` | normal | open bottom split terminal buffer |
-| `<leader>gc` | normal | toggle comment |
+| `<leader>cc` | normal | toggle comment |
 | `g?` | normal | show man page for word under cursor |
 | `gfo` | normal | enable folds for buffer |
 | `<leader>so` | normal | toggle client symbol outline |

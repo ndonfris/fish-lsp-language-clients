@@ -2,58 +2,6 @@
 --- Provides version checking, document highlighting, and LSP attach configuration.
 local M = {}
 
---- Checks if current Neovim version meets specified requirements.
---- @param required_major number|nil Major version requirement (default: 0)
---- @param required_minor number|nil Minor version requirement (default: 11)
---- @param required_patch number|nil Patch version requirement (default: 1)
---- @return table Result containing:
----   - meets_requirement boolean: Whether version requirement is met
----   - current table: Current Neovim version information
----   - required table: Required version information
-function M.check_version(required_major, required_minor, required_patch)
-  -- Set defaults if not provided
-  required_major = required_major or 0
-  required_minor = required_minor or 11
-  required_patch = required_patch or 1
-
-  local v = vim.version()
-  local meets_requirement = false
-
-  if v.major > required_major then
-    meets_requirement = true
-  elseif v.major == required_major and v.minor > required_minor then
-    meets_requirement = true
-  elseif v.major == required_major and v.minor == required_minor and v.patch >= required_patch then
-    meets_requirement = true
-  end
-
-  return {
-    meets_requirement = meets_requirement,
-    current = v,
-    required = { major = required_major, minor = required_minor, patch = required_patch },
-  }
-end
-
--- M.document_symbols_outline = require('lsps.document-symbol-outline').document_symbols_outline()
-
---- Checks if current Neovim version meets the required v0.11.1.
---- Displays a warning notification if requirement is not met.
---- @return nil
-function M.check_nvim_version()
-  local result = M.check_version()
-  local v = result.current
-
-  if not result.meets_requirement then
-    vim.notify(
-      string.format("Warning: Current Neovim v%d.%d.%d doesn't meet the required v0.11.1", v.major, v.minor, v.patch),
-      vim.log.levels.WARN,
-      {
-        title = " Neovim version check",
-      }
-    )
-  end
-end
-
 --- Sets up document highlighting for the LSP client.
 --- Creates highlight groups and autocommands for cursor-based reference highlighting.
 --- @param client table LSP client object
@@ -99,7 +47,7 @@ end
 ---   })
 function M.on_attach(client, bufnr)
   -- make sure we are using v0.11.1 of neovim
-  M.check_nvim_version()
+  require('lsps.utils.check_health').check_nvim_version()
 
   -- Set up document highlight
   M.setup_document_highlight(client, bufnr)
@@ -446,12 +394,11 @@ function M.on_attach(client, bufnr)
   })
 
   -- Set up document symbol outline
-  local document_symbols_outline = require("lsps.utils.document_symbol_outline").document_symbols_outline
-  vim.keymap.set("n", "<leader>so", document_symbols_outline, {
+  vim.keymap.set("n", "<leader>so", require("lsps.utils.symbol_outline").toggle, {
     noremap = true,
     silent = true,
     buffer = bufnr,
-    desc = "LSP: Toggle showing document symbol tree",
+    desc = "LSP: Toggle showing document symbol outline tree",
   })
 end
 
