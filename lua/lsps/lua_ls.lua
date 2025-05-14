@@ -1,6 +1,7 @@
 -- lua/lsps/lua_ls.lua
 --- @type vim.lsp.ClientConfig
 return {
+  name = "lua_ls",
   cmd = { 'lua-language-server' },
   filetypes = { 'lua' },
   root_markers = {

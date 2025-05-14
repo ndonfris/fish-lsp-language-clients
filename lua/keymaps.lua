@@ -111,14 +111,14 @@ vim.keymap.set("v", "M", "%", global_keymap_opts)
 vim.keymap.set("n", "qq", "<cmd>qa!<cr>", global_keymap_opts)
 
 -- C-d and C-u scroll in floating windows
-local hover_scroll = require("hover_scroll")
+local hover_scroll = require("lsps.utils.hover_scroll")
 vim.keymap.set("n", "<C-d>", function() hover_scroll.scroll_hover("<C-f>", "<C-d>") end,
   { noremap = true, silent = true })
 vim.keymap.set("n", "<C-u>", function() hover_scroll.scroll_hover("<C-b>", "<C-u>") end,
   { noremap = true, silent = true })
 
 -- Completion utils
-local completion_utils = require("lsps.completion_utils")
+local completion_utils = require("lsps.utils.completion_utils")
 local completion_opts = completion_utils.default_opts
 local completion_expr_opts = completion_utils.expr_opts
 

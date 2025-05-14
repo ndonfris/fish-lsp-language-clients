@@ -1,8 +1,8 @@
 -- lua/lsps/init.lua
 local M = {}
 
--- Import the utility functions
-local utils = require('lsps.utils')
+-- Import the on_attach utility functions
+local utils = require('lsps.utils.on_attach')
 
 -- Core servers that are always enabled
 local core_servers = {
@@ -10,8 +10,11 @@ local core_servers = {
 }
 
 -- Additional servers that are conditionally enabled
+-- These configurations are loaded only if setup_other_lsps is true
+-- There configurations are in the matching filenames in the lsps directory
 local optional_servers = {
   'lua_ls',
+  'ts_ls',
 }
 
 -- Function to initialize servers with options

@@ -105,10 +105,10 @@ function M.on_attach(client, bufnr)
   M.setup_document_highlight(client, bufnr)
 
   -- Enable LSP autocompletion if the client supports it
-  if client.server_capabilities.completionProvider then
+  if vim.lsp.completion and client.server_capabilities.completionProvider then
     vim.lsp.completion.enable(true, client.id, bufnr, {
       -- Set to true for automatic triggering, false for manual (Ctrl-X Ctrl-O)
-      autotrigger = true
+      autotrigger = true,
     })
   end
 
@@ -159,14 +159,12 @@ function M.on_attach(client, bufnr)
     "autocmd CursorHoldI <buffer> lua vim.lsp.buf.signature_help({ focusable = false,silent = true})
   ]])
 
-
   -- codelens
   if vim.lsp.codelens and client.server_capabilities.codeLensProvider then
     vim.cmd([[
       autocmd BufEnter,CursorHold,InsertLeave <buffer> lua vim.lsp.codelens.refresh({ bufnr = 0 })
     ]])
   end
-
 
   vim.api.nvim_create_autocmd("CursorHold", {
     buffer = bufnr,
@@ -178,47 +176,116 @@ function M.on_attach(client, bufnr)
     end,
   })
 
-  -- Local keybindings for LSP features
-  local opts = { buffer = bufnr, noremap = true, silent = true }
-
   --- check if the user has disabled custom keymaps
   if vim.g.enable_custom_keymaps ~= nil and not vim.g.enable_custom_keymaps then
     return nil
   end
 
   -- Codelens
-  vim.keymap.set("n", "gcl", vim.lsp.codelens.run, opts)
+  vim.keymap.set("n", "gcl", vim.lsp.codelens.run, {
+    noremap = true,
+    silent = true,
+    buffer = bufnr,
+    desc = "LSP: Run CodeLens",
+  })
 
   -- Go-to definition
-  vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+  vim.keymap.set("n", "gd", vim.lsp.buf.definition, {
+    noremap = true,
+    silent = true,
+    buffer = bufnr,
+    desc = "LSP: Definition",
+  })
 
   -- Go-to implementation
-  vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+  vim.keymap.set("n", "gi", vim.lsp.buf.implementation, {
+    noremap = true,
+    silent = true,
+    buffer = bufnr,
+    desc = "LSP: Implementation",
+  })
 
   -- Hover
-  vim.keymap.set("n", "gs", vim.lsp.buf.hover, opts)
-  vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+  vim.keymap.set("n", "gs", vim.lsp.buf.hover, {
+    noremap = true,
+    silent = true,
+    buffer = bufnr,
+    desc = "LSP: Hover",
+  })
+  vim.keymap.set("n", "K", vim.lsp.buf.hover, {
+    noremap = true,
+    silent = true,
+    buffer = bufnr,
+    desc = "LSP: Hover",
+  })
 
   -- Jump to diagnostic
-  vim.keymap.set("n", "gn", function() vim.diagnostic.jump({ count = 1, float = true }) end, opts)
-  vim.keymap.set("n", "gp", function() vim.diagnostic.jump({ count = -1, float = true }) end, opts)
-  vim.keymap.set("n", "gen", function() vim.diagnostic.jump({ count = 1, float = true }) end, opts)
-  vim.keymap.set("n", "gep", function() vim.diagnostic.jump({ count = -1, float = true }) end, opts)
+  vim.keymap.set("n", "gn", function()
+    vim.diagnostic.jump({ count = 1, float = true })
+  end, {
+    desc = "LSP: Jump to next diagnostic",
+    noremap = true,
+    silent = true,
+    buffer = bufnr,
+  })
+  vim.keymap.set("n", "gp", function()
+    vim.diagnostic.jump({ count = -1, float = true })
+  end, {
+    noremap = true,
+    silent = true,
+    buffer = bufnr,
+    desc = "LSP: Jump to previous diagnostic",
+  })
+  vim.keymap.set("n", "gen", function()
+    vim.diagnostic.jump({ count = 1, float = true })
+  end, {
+    silent = true,
+    buffer = bufnr,
+    desc = "LSP: Jump to next diagnostic",
+  })
+  vim.keymap.set("n", "gep", function()
+    vim.diagnostic.jump({ count = -1, float = true })
+  end, {
+    noremap = true,
+    silent = true,
+    buffer = bufnr,
+    desc = "LSP: Jump to previous diagnostic",
+  })
 
   -- Navigate to next/prev diagnostic of specific severity
   vim.keymap.set("n", "<leader>de", function()
     vim.diagnostic.jump({ count = 1, float = true })
-  end, opts)
+  end, {
+    noremap = true,
+    silent = true,
+    buffer = bufnr,
+    desc = "LSP: Jump to next diagnostic error",
+  })
 
   vim.keymap.set("n", "<leader>dw", function()
     vim.diagnostic.jump({ count = -1, float = true })
-  end, opts)
+  end, {
+    noremap = true,
+    silent = true,
+    buffer = bufnr,
+    desc = "LSP: Jump to next diagnostic warning",
+  })
 
   -- Go-to reference
-  vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+  vim.keymap.set("n", "gr", vim.lsp.buf.references, {
+    noremap = true,
+    silent = true,
+    buffer = bufnr,
+    desc = "LSP: References",
+  })
 
   -- Rename
-  vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, opts)
+  vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, {
+    noremap = true,
+    silent = true,
+    buffer = bufnr,
+    desc = "LSP: Rename",
+  })
 
   -- Quickfix function
   local function quickfix()
@@ -231,9 +298,24 @@ function M.on_attach(client, bufnr)
   end
 
   -- Code actions
-  vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
-  vim.keymap.set("n", "gca", vim.lsp.buf.code_action, opts)
-  vim.keymap.set("n", "<leader>qf", quickfix, opts)
+  vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, {
+    noremap = true,
+    silent = true,
+    buffer = bufnr,
+    desc = "LSP: Code-Action",
+  })
+  vim.keymap.set("n", "gca", vim.lsp.buf.code_action, {
+    noremap = true,
+    silent = true,
+    buffer = bufnr,
+    desc = "LSP: Code-Action",
+  })
+  vim.keymap.set("n", "<leader>qf", quickfix, {
+    noremap = true,
+    silent = true,
+    buffer = bufnr,
+    desc = "LSP: Quickfix Code-Action",
+  })
 
   -- refactors
   vim.keymap.set("n", "<leader>cr", function() -- Normal mode
@@ -251,7 +333,12 @@ function M.on_attach(client, bufnr)
         only = { "refactor" },
       },
     })
-  end, opts)
+  end, {
+    noremap = true,
+    silent = true,
+    buffer = bufnr,
+    desc = "LSP: Get Refactor Code-Action",
+  })
   vim.keymap.set("v", "<leader>cr", function() -- Visual mode
     vim.lsp.buf.code_action({
       --- @diagnostic disable-next-line
@@ -263,23 +350,53 @@ function M.on_attach(client, bufnr)
         ["end"] = vim.api.nvim_buf_get_mark(0, ">"),
       },
     })
-  end, opts)
+  end, {
+    noremap = true,
+    silent = true,
+    buffer = bufnr,
+    desc = "LSP: Get selected Refactor Code-Action",
+  })
 
   -- Format
   vim.keymap.set({ "x", "v", "n" }, "<leader>f", function()
     vim.lsp.buf.format({ async = true })
-    vim.notify('LSP Formatted', vim.log.levels.INFO, { title = "LSP " })
-  end, opts)
+    vim.notify("LSP Formatted", vim.log.levels.INFO, { title = "LSP " })
+  end, {
+    noremap = true,
+    silent = true,
+    buffer = bufnr,
+    desc = "LSP: Format",
+  })
 
   -- Signature help
-  vim.keymap.set("n", "<leader>s", vim.lsp.buf.signature_help, opts)
-  vim.keymap.set("i", "<C-s>", vim.lsp.buf.signature_help, opts)
+  vim.keymap.set("n", "<leader>s", vim.lsp.buf.signature_help, {
+    noremap = true,
+    silent = true,
+    buffer = bufnr,
+    desc = "LSP: Signature Help",
+  })
+  vim.keymap.set("i", "<C-s>", vim.lsp.buf.signature_help, {
+    noremap = true,
+    silent = true,
+    buffer = bufnr,
+    desc = "LSP: Signature Help",
+  })
 
   -- Document highlight
-  vim.keymap.set("n", "<leader>h", vim.lsp.buf.document_highlight, opts)
+  vim.keymap.set("n", "<leader>h", vim.lsp.buf.document_highlight, {
+    noremap = true,
+    silent = true,
+    buffer = bufnr,
+    desc = "LSP: Document Highlight",
+  })
 
   -- Tree-sitter inspection
-  vim.keymap.set("n", "<leader>i", "<cmd>InspectTree<cr>", opts)
+  vim.keymap.set("n", "<leader>i", "<cmd>InspectTree<cr>", {
+    noremap = true,
+    silent = true,
+    buffer = bufnr,
+    desc = "Inspection tree-sitter tree for current buffer",
+  })
   -- Create an autocommand group for the query filetype keymaps
   local query_group = vim.api.nvim_create_augroup("QueryFiletypeKeymaps", { clear = true })
 
@@ -294,7 +411,7 @@ function M.on_attach(client, bufnr)
         vim.cmd("bd")
       end, { buffer = ev.buf, noremap = true, silent = true, desc = "Close query buffer" })
     end,
-    desc = "Set up query buffer close keybinding"
+    desc = "Set up query buffer close keybinding",
   })
 
   -- Folding setup
@@ -304,24 +421,33 @@ function M.on_attach(client, bufnr)
       --- @diagnostic disable-next-line: inject-field
       vim.b.foldexpr = "v:lua.vim.lsp.foldexpr()"
     end
-  end, opts)
+  end, { buffer = bufnr, noremap = true, silent = true, desc = "Toggle folding" })
 
   -- Set up workspace symbols
-  vim.keymap.set("n", "<leader><leader>W", vim.lsp.buf.workspace_symbol, {
+  vim.keymap.set("n", "<leader>W", vim.lsp.buf.workspace_symbol, {
     noremap = true,
     silent = true,
     buffer = bufnr,
     desc = "LSP: Workspace Symbol",
   })
 
-  vim.keymap.set("n", "<leader><leader>S", vim.lsp.buf.document_symbol, {
+  -- Set up document symbols
+  vim.keymap.set("n", "<leader>D", vim.lsp.buf.document_symbol, {
+    noremap = true,
+    silent = true,
+    buffer = bufnr,
+    desc = "LSP: Document Symbol",
+  })
+  vim.keymap.set("n", "<leader>S", vim.lsp.buf.document_symbol, {
     noremap = true,
     silent = true,
     buffer = bufnr,
     desc = "LSP: Document Symbol",
   })
 
-  vim.keymap.set("n", "<leader>so", require('lsps.document-symbol-outline').document_symbols_outline, {
+  -- Set up document symbol outline
+  local document_symbols_outline = require("lsps.utils.document_symbol_outline").document_symbols_outline
+  vim.keymap.set("n", "<leader>so", document_symbols_outline, {
     noremap = true,
     silent = true,
     buffer = bufnr,

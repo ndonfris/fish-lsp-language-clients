@@ -1,9 +1,12 @@
 local M = {}
 
 local function execute_tmux_command(command)
-  vim.notify("tmux " .. command, vim.log.levels.INFO, {
-    title = " tmux command",
-  })
+  if vim.g.enable_tmux_notifications == true then
+    vim.notify("tmux " .. command, vim.log.levels.INFO, {
+      title = " tmux command",
+      timeout = 500
+    })
+  end
   vim.cmd("silent !tmux " .. command)
 end
 
@@ -40,14 +43,18 @@ function M.setup()
   if vim.g.enable_tmux_keymaps == false then
     return
   end
-  vim.keymap.set( "n", "<leader>tt"   , ':lua require("tmux").choose_tree()<CR>', { noremap = true, silent = true, desc = "tmux choose tree" }      )
-  vim.keymap.set( "n", "<leader><C-w>", ':lua require("tmux").last_window()<CR>', { noremap = true, silent = true, desc = "tmux last window" }      )
-  vim.keymap.set( "n", "<leader><C-r>", ':lua require("tmux").pane_right()<CR>' , { noremap = true, silent = true, desc = "tmux select-pane right" })
-  vim.keymap.set( "n", "<leader><C-l>", ':lua require("tmux").pane_left()<CR>'  , { noremap = true, silent = true, desc = "tmux select-pane left" } )
-  vim.keymap.set( "n", "<leader><C-d>", ':lua require("tmux").pane_down()<CR>'  , { noremap = true, silent = true, desc = "tmux select-pane down" } )
-  vim.keymap.set( "n", "<leader><C-u>", ':lua require("tmux").pane_up()<CR>'    , { noremap = true, silent = true, desc = "tmux select-pane up" }   )
-
-  -- vim.keymap.set('n', '<leader><C-b>',  ':lua require("term_buffer").open_bottom_terminal()<CR>', { noremap = true, silent = true, desc = "open a terminal at bottom of window in insert mode" })
+  vim.keymap.set("n", "<leader>tt", ':lua require("tmux").choose_tree()<CR>',
+    { noremap = true, silent = true, desc = "tmux choose tree" })
+  vim.keymap.set("n", "<leader><C-w>", ':lua require("tmux").last_window()<CR>',
+    { noremap = true, silent = true, desc = "tmux last window" })
+  vim.keymap.set("n", "<leader><C-h>", ':lua require("tmux").pane_right()<CR>',
+    { noremap = true, silent = true, desc = "tmux select-pane right" })
+  vim.keymap.set("n", "<leader><C-l>", ':lua require("tmux").pane_left()<CR>',
+    { noremap = true, silent = true, desc = "tmux select-pane left" })
+  vim.keymap.set("n", "<leader><C-d>", ':lua require("tmux").pane_down()<CR>',
+    { noremap = true, silent = true, desc = "tmux select-pane down" })
+  vim.keymap.set("n", "<leader><C-u>", ':lua require("tmux").pane_up()<CR>',
+    { noremap = true, silent = true, desc = "tmux select-pane up" })
 end
 
 return M
