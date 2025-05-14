@@ -97,6 +97,8 @@ echo '__check_lsp_dir' >> $__fish_config_dir/conf.d/__check_lsp_dir.fish
 | `<leader>ff` | normal | find files |
 | `<C-space>` | normal | find files |
 | `<leader>fb` | normal | find buffers |
+| `<leader>W` | normal | search workspace symbols |
+| `<leader>D` | normal | search document symbols |
 
 </div>
 
@@ -109,4 +111,5 @@ configuration, it does ship some customization options.
 | ------ | ----------- | ------- | 
 | `vim.g.enable_custom_keymaps` | enable all of the keymaps shipped with the config | `true` |
 | `vim.g.enable_tmux_keymaps` | enable keymaps for tmux | `true` |
+| `vim.g.enable_tmux_notifications` | enable tmux keymaps to display a notification when used | `true` |
 

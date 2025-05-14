@@ -10,7 +10,7 @@
 ---
 ---    You can create an alias for running this standalone config inside nvim, using the `$NVIM_APPNAME` env variable.
 ---
----    To make the alias temporally avaliable in your current session:
+---    To make the alias temporally available in your current session:
 ---    >_ alias flc 'NVIM_APPNAME=fish-lsp-language-clients nvim'
 ---
 ---    To make the alias always included in your shell:
@@ -70,7 +70,7 @@ require('tmux').setup()          -- tmux keymappings
 -- setup the lsps (which are configured in `./lua/lsps/*.lua`)
 require('lsps').setup({
   -- set this to false if you only want to use the fish-lsp with this config
-  setup_other_lsps = true, -- incase you want lua_ls & ts_ls to be installed for editting the config
+  setup_other_lsps = true, -- incase you want lua_ls & ts_ls to be installed for editing the config
 })
 
 -- ... anything else ...
