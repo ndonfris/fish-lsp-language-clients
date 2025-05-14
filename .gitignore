@@ -2,3 +2,4 @@ autoload/plugged/*
 .vim
 
 plugin
+.luarc.json

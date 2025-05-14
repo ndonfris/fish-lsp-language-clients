@@ -67,9 +67,7 @@ If you want to continue using this branch to test the language server, see the _
 <!-- NVIM_APPNAME=fish-lsp-language-clients nvim ~/.config/fish/config.fish -->
 ```fish
 alias flc-conf="NVIM_APPNAME=fish-lsp-language-clients nvim ~/.config/fish/config.fish"
-
 # or
-
 alias flc="NVIM_APPNAME=fish-lsp-language-clients nvim"
 ```
 
@@ -147,5 +145,5 @@ configuration, it does ship some customization options.
 | ------ | ----------- | ------- | 
 | `vim.g.enable_custom_keymaps` | enable all of the keymaps shipped with the config | `true` |
 | `vim.g.enable_tmux_keymaps` | enable keymaps for tmux | `true` |
-| `vim.g.enable_tmux_notifications` | enable tmux keymaps to display a notification when used | `true` |
+| `vim.g.enable_tmux_notifications` | enable tmux keymaps to display a notification when used | `false` |
 
