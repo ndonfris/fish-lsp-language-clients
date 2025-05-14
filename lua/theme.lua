@@ -1,4 +1,4 @@
-
+-- Theme configuration
 vim.cmd[[
   colorscheme dracula
   set termguicolors

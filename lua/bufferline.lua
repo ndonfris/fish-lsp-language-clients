@@ -1,5 +1,6 @@
+--- The bufferline displayed at the top of the Vim window.
+
 ---@diagnostic disable: need-check-nil, cast-local-type
--- bufferline.lua
 local M = {}
 
 -- Default configuration options

@@ -1,3 +1,4 @@
+-- the tmux keymappings incase you are using tmux
 local M = {}
 
 local function execute_tmux_command(command)

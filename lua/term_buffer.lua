@@ -1,3 +1,4 @@
+-- A module to allow for easily opening terminal buffers from inside this configuration.
 local M = {}
 
 function M.open_terminal()
