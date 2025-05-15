@@ -111,8 +111,9 @@ echo '__check_lsp_dir' >> $__fish_config_dir/conf.d/__check_lsp_dir.fish
 | `<leader>f` | normal  | format document |
 | `<leader>ca` | normal  | code action |
 | `gca` | normal  | code action |
-| `<leader>W` | normal | search workspace symbols |
-| `<leader>D` | normal | search document symbols |
+| `<leader><leader>w` | normal | search workspace symbols |
+| `<leader><leader>d` | normal | search document symbols |
+| `<leader><leader>o` | normal | toggle client symbol outline |
 | `<C-s>` | insert | show signature help |
 | `<leader>e` | normal | show diagnostics |
 | `gen` | normal | go to next diagnostic error |
@@ -124,7 +125,6 @@ echo '__check_lsp_dir' >> $__fish_config_dir/conf.d/__check_lsp_dir.fish
 | `<leader>cc` | normal | toggle comment |
 | `g?` | normal | show man page for word under cursor |
 | `gfo` | normal | enable folds for buffer |
-| `<leader>so` | normal | toggle client symbol outline |
 | `<leader>ff` | normal | find files |
 | `<C-space>` | normal | find files |
 | `<leader>fb` | normal | find buffers |

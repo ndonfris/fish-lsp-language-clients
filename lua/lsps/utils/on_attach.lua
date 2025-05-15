@@ -372,7 +372,7 @@ function M.on_attach(client, bufnr)
   end, { buffer = bufnr, noremap = true, silent = true, desc = "Toggle folding" })
 
   -- Set up workspace symbols
-  vim.keymap.set("n", "<leader>W", vim.lsp.buf.workspace_symbol, {
+  vim.keymap.set("n", "<leader><leader>w", vim.lsp.buf.workspace_symbol, {
     noremap = true,
     silent = true,
     buffer = bufnr,
@@ -380,13 +380,7 @@ function M.on_attach(client, bufnr)
   })
 
   -- Set up document symbols
-  vim.keymap.set("n", "<leader>D", vim.lsp.buf.document_symbol, {
-    noremap = true,
-    silent = true,
-    buffer = bufnr,
-    desc = "LSP: Document Symbol",
-  })
-  vim.keymap.set("n", "<leader>S", vim.lsp.buf.document_symbol, {
+  vim.keymap.set("n", "<leader><leader>d", vim.lsp.buf.document_symbol, {
     noremap = true,
     silent = true,
     buffer = bufnr,
@@ -394,7 +388,7 @@ function M.on_attach(client, bufnr)
   })
 
   -- Set up document symbol outline
-  vim.keymap.set("n", "<leader>so", require("lsps.utils.symbol_outline").toggle, {
+  vim.keymap.set("n", "<leader><leader>o", require("lsps.utils.symbol_outline").toggle, {
     noremap = true,
     silent = true,
     buffer = bufnr,
